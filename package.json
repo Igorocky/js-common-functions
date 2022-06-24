@@ -1,5 +1,5 @@
 {
-  "name": "rescript-project-template",
+  "name": "@igye/common-functions",
   "version": "0.0.1",
   "scripts": {
     "build": "rescript",
