@@ -1,6 +1,14 @@
 {
   "name": "@igye/common-functions",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "files": [
+    "README.md",
+    "Changes.md",
+    "LICENSE",
+    "bsconfig.json",
+    "src/**/*.res",
+    "src/**/*.resi"
+  ],
   "scripts": {
     "build": "rescript",
     "clean": "rescript clean -with-deps",
