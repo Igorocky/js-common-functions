@@ -3,3 +3,6 @@
 /lib/
 .bsb.lock
 .merlin
+/*.iml
+/src/*.bs.js
+/.idea/
