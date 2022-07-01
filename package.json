@@ -1,6 +1,6 @@
 {
-  "name": "@igye/common-functions",
-  "version": "0.0.3",
+  "name": "@expln/utils",
+  "version": "0.0.1",
   "files": [
     "README.md",
     "Changes.md",
