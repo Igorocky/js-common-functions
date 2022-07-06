@@ -3,21 +3,31 @@ type param = {
     value: string,
 }
 
-let pathToStr = (path: list<string>) => path->Belt.List.reduce("", (a,b) => a ++ "/" ++ b)
+type path = list<string>
+type json = Js.Json.t
+type jsmap = Js.Dict.t<json>
+let exn = str => Js.Exn.raiseError(str)
 
-let objExn = (json: Js.Json.t, pathToThis: list<string>, mapper:(Js.Dict.t<Js.Json.t>) => 'a) => 
-    switch json->Js.Json.classify {
-        | Js.Json.JSONObject(dict) => mapper(dict)
-        | _ => Js.Exn.raiseError("object was expected at '" ++ pathToStr(pathToThis) ++ "'.")
+let pathToStr = (p: path) => p->Belt.List.reduce("", (a,b) => a ++ "/" ++ b)
+
+let objOptExn = (js: json, pathToThis: path, mapper:(jsmap,path) => 'a) => 
+    switch js->Js.Json.classify {
+        | Js.Json.JSONObject(dict) => Some(mapper(dict))
+        | Js.Json.JSONNull => None
+        | _ => exn("an object was expected at '" ++ pathToStr(pathToThis) ++ "'.")
     }
 
-let strAttr(dict: Js.Dict.t<Js.Json.t>, pathToParent: list<string>, name:string) => 
-    switch dict -> Js.Dict.get(attr) {
-        | Some(json) => switch json -> Js.Json.classify {
-                            | Js.Json.JSONString(str) => str
-                            | _ => Js.Exn.raiseError("a string was expected at '" ++ pathToStr(pathToThis) ++ "'.")
-                        }
-        | None => Error("attribute expected")
+let strOptExn = (js: json, pathToThis: path) => 
+    switch js->Js.Json.classify {
+        | Js.Json.JSONString(str) => Some(str)
+        | Js.Json.JSONNull => None
+        | _ => exn("a string was expected at '" ++ pathToStr(pathToThis) ++ "'.")
+    }
+
+let strAttrOptExn = (dict: jsmap, name:string, pathToParent: path) => 
+    switch dict -> Js.Dict.get(name) {
+        | Some(js) => strOptExn(js, list{name, ...pathToParent})
+        | None => None
     }
 
 let getStringFromDict: (Js.Dict.t<Js.Json.t>, string) => Belt.Result.t<string,string> = 
