@@ -1,9 +1,7 @@
-open Test
+open Expln_test
 open ParseJson
 
-test(`test1`, () => {
-    assert(1===2)
+it(`test1`, (.) => {
+    Js.Console.log("inside test 1.")
 })
 
-
-runAllTests()
