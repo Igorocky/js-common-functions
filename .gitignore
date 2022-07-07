@@ -4,5 +4,5 @@
 .bsb.lock
 .merlin
 /*.iml
-/src/*.bs.js
+/src/**/*.bs.js
 /.idea/
