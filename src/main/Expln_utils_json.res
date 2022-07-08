@@ -1,4 +1,6 @@
 let {exn} = module(Expln_utils_common)
+let {classify} = module(Js.Json)
+let {reduce} = module(Belt.List)
 
 type path = list<string>
 type json = Js.Json.t
@@ -6,11 +8,11 @@ type jsmap = Js.Dict.t<json>
 
 let pathToStr = (p: path) => switch p {
     | list{} => "/"
-    | _ => p->Belt.List.reduce("", (a,b) => a ++ "/" ++ b)
+    | _ => p->reduce("", (a,b) => a ++ "/" ++ b)
 }
 
 let objOpt = (js:json, pathToThis:path, mapper: (jsmap,path) => 'a) =>
-    switch js->Js.Json.classify {
+    switch js->classify {
         | Js.Json.JSONObject(dict) => Some(mapper(dict,pathToThis))
         | Js.Json.JSONNull => None
         | _ => exn(`an object was expected at '${pathToStr(pathToThis)}'.`)
@@ -23,7 +25,7 @@ let obj = (js: json, pathToThis: path, mapper:(jsmap,path) => 'a) =>
     }
 
 let jsonToStrOpt = (js: json, pathToThis: path) => 
-    switch js->Js.Json.classify {
+    switch js->classify {
         | Js.Json.JSONString(str) => Some(str)
         | Js.Json.JSONNull => None
         | _ => exn(`a string was expected at '${pathToStr(pathToThis)}'.`)
