@@ -8,3 +8,9 @@ let assertStr = (expected:string, actual:string) => {
         exn(`\nexpected: "${expected}"\n  actual: "${actual}"`)
     }
 }
+
+let assertTrue = (actual:bool) => {
+    if (!actual) {
+        exn(`true was expected`)
+    }
+}

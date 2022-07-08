@@ -1,5 +1,5 @@
-open Expln_utils_json
-open Expln_test
+let {pathToStr, parseObj, parseObjOpt, str} = module(Expln_utils_json)
+let {describe,it,assertStr,assertTrue} = module(Expln_test)
 
 type param = {
     name: string,
@@ -15,14 +15,30 @@ describe("Expln_utils_json.parseObj", (. ) => {
         }`
 
         //when
-        let p = Expln_utils_json.parseObj(jsonStr, (d,p) => {
-            name: Expln_utils_json.str(d,"name",p),
-            value: Expln_utils_json.str(d,"value",p),
+        let p = parseObj(jsonStr, (d,p) => {
+            name: str(d,"name",p),
+            value: str(d,"value",p),
         })->Belt.Result.getExn
 
         //then
         assertStr("AAA", p.name)
         assertStr("BBB", p.value)
+    })
+})
+
+describe("Expln_utils_json.parseObjOpt", (. ) => {
+    it("should return None when null is passed", (. ) => {
+        //given
+        let jsonStr = `null`
+
+        //when
+        let p = parseObjOpt(jsonStr, (d,p) => {
+            name: str(d,"name",p),
+            value: str(d,"value",p),
+        })->Belt.Result.getExn
+
+        //then
+        assertTrue(p->Belt.Option.isNone)
     })
 })
 
