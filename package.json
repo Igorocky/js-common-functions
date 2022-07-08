@@ -13,7 +13,7 @@
     "build": "rescript",
     "clean": "rescript clean -with-deps",
     "start": "rescript build -w",
-    "test": "mocha src/test/**/*.js"
+    "build-and-test": "rescript && mocha src/test/**/*.js"
   },
   "keywords": [
     "rescript"
