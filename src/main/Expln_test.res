@@ -14,3 +14,5 @@ let assertTrue = (actual:bool) => {
         exn(`true was expected`)
     }
 }
+
+let fail = () => exn("Test failed.")

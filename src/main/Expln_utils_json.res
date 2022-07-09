@@ -58,6 +58,6 @@ let parseObjOpt = (jsonStr, mapper) => try {
 let parseObj = (jsonStr, mapper) =>
     switch parseObjOpt(jsonStr, mapper) {
         | Ok(Some(o)) => Ok(o)
-        | Ok(None) => Error(`an object was expected.`)
+        | Ok(None) => Error(`An object was expected.`)
         | Error(msg) => Error(msg)
     }
