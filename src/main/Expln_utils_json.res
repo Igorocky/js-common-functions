@@ -6,6 +6,12 @@ type path = list<string>
 type json = Js.Json.t
 type jsmap = Js.Dict.t<json>
 
+type row = Belt.Map.String.t<json>
+type table = array<row>
+type selectExpr =
+    | Attr({attr:string, name:string})
+    | Func({func:jsmap=>json, name:string})
+
 let pathToStr = (p: path) => switch p {
     | list{} => "/"
     | _ => p->reduce("", (a,b) => a ++ "/" ++ b)
@@ -61,3 +67,22 @@ let parseObj = (jsonStr, mapper) =>
         | Ok(None) => Error(`An object was expected.`)
         | Error(msg) => Error(msg)
     }
+
+let applySingleSelect:(json,selectExpr) => row = 
+    (obj, sel) => switch obj->classify {
+        | Js.Json.JSONObject(d) =>
+            switch sel {
+                | Attr({attr,name}) => 
+                    switch d->Js.Dict.get(attr) {
+                        | Some(v) => Belt.Map.String.fromArray([(name,v)])
+                        | None => Belt.Map.String.fromArray([(name,Js.Json.null)])
+                    }
+                | Func({func,name}) => Belt.Map.String.fromArray([(name,func(d))])
+            }
+        | _ => exn("an attempt to apply applySingleSelect to a non-object.")
+    }
+
+let mergeRows:(row,row) => row = (r1,r2) => 
+    r1->Belt.Map.String.reduce(r2,(a,k,v)=>a->Belt.Map.String.set(k,v))
+
+//let select: (table, list<selectExpr>) => table = (t,s) =>
