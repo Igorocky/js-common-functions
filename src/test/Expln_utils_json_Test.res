@@ -62,6 +62,26 @@ describe("Expln_utils_json.parseObj", (. ) => {
             | _ => fail()
         }
     })
+    it("returns a meaningfull message when null is passed for a non-null attribute", (. ) => {
+        //given
+        let jsonStr = `{
+            "name": null,
+            "value": "BBB"
+        }`
+
+        //when
+        let p = parseObj(jsonStr, (d,p) => {
+            name: str("name",d,p),
+            value: str("value",d,p),
+        })
+
+        //then
+        switch p {
+            | Error(msg) =>
+                assertStr("Parse error: a string was expected at '/name'.", msg)
+            | _ => fail()
+        }
+    })
 })
 
 describe("Expln_utils_json.parseObjOpt", (. ) => {
