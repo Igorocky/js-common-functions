@@ -16,8 +16,8 @@ describe("Expln_utils_json.parseObj", (. ) => {
 
         //when
         let p = parseObj(jsonStr, (d,p) => {
-            name: str(d,"name",p),
-            value: str(d,"value",p),
+            name: str("name",d,p),
+            value: str("value",d,p),
         })->Belt.Result.getExn
 
         //then
@@ -33,8 +33,8 @@ describe("Expln_utils_json.parseObjOpt", (. ) => {
 
         //when
         let p = parseObjOpt(jsonStr, (d,p) => {
-            name: str(d,"name",p),
-            value: str(d,"value",p),
+            name: str("name",d,p),
+            value: str("value",d,p),
         })->Belt.Result.getExn
 
         //then

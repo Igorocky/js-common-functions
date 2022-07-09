@@ -31,14 +31,14 @@ let jsonToStrOpt = (js: json, pathToThis: path) =>
         | _ => exn(`a string was expected at '${pathToStr(pathToThis)}'.`)
     }
 
-let strOpt = (dict: jsmap, name:string, pathToParent: path) => 
+let strOpt = (name:string, dict: jsmap, pathToParent: path) => 
     switch dict -> Js.Dict.get(name) {
         | Some(js) => jsonToStrOpt(js, list{name, ...pathToParent})
         | None => None
     }
 
-let str = (dict: jsmap, name:string, pathToParent: path) => 
-    switch strOpt(dict, name, pathToParent) {
+let str = (name:string, dict: jsmap, pathToParent: path) => 
+    switch strOpt(name, dict, pathToParent) {
         | Some(str) => str
         | None => exn(`a string was expected at '${pathToStr(list{name, ...pathToParent})}'.`)
     }
