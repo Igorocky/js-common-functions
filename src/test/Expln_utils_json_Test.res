@@ -145,7 +145,7 @@ describe("objToTable", (.) => {
         }` -> Js_json.parseExn
 
         //when
-        let tbl = objToTable(
+        let tbl: Expln_utils_json.table = objToTable(
             json,
             {
                 columnOrder: Belt_Map.String.empty,
@@ -162,6 +162,6 @@ describe("objToTable", (.) => {
         )
 
         //then
-        log2("tbl", tbl)
+        tbl->Belt_Array.forEach(e => log(Expln_utils_json.rowToStr(e)))
     })
 })

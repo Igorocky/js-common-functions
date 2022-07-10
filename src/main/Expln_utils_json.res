@@ -103,6 +103,22 @@ let parseObj = (jsonStr, mapper) =>
         | Error(msg) => Error(msg)
     }
 
+let jsonToStr = json =>
+    switch json -> classify {
+        | Js_json.JSONFalse => "false"
+        | Js_json.JSONTrue => "true"
+        | Js_json.JSONNull => "null"
+        | Js_json.JSONString(str) => str
+        | Js_json.JSONNumber(num) => num->Js_float.toString
+        | Js_json.JSONObject(_) => "<object>"
+        | Js_json.JSONArray(_) => "<array>"
+    }
+
+let rowToStr: mapjs => string = row =>
+    row -> Belt_Map.String.keysToArray 
+        -> Belt_Array.map(k => `"${k}": "${row->Belt_Map.String.getExn(k)->jsonToStr}"`)
+        -> Belt_Array.reduce("", (a,e) => e ++ ", ")
+
 let applySingleSelect:(json,selectExpr) => mapjs = 
     (obj, sel) => switch obj->classify {
         | Js.Json.JSONObject(d) =>
@@ -150,5 +166,5 @@ let objToTable = (jsObj, cfg) => {
                     }
             })
         }
-    )
+    ) -> Belt_Array.map(( (row,_) ) => row)
 }
