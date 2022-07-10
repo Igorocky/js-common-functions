@@ -1,4 +1,4 @@
-let {pathToStr, parseObj, parseObjOpt, str} = module(Expln_utils_json)
+let {pathToStr, parseObj, parseObjOpt, str, objToTable} = module(Expln_utils_json)
 let {describe,it,assertStr,assertTrue,fail} = module(Expln_test)
 
 type param = {
@@ -6,8 +6,8 @@ type param = {
     value: string,
 }
 
-describe("Expln_utils_json.parseObj", (. ) => {
-    it("should parse simple object", (. ) => {
+describe("Expln_utils_json.parseObj", (.) => {
+    it("should parse simple object", (.) => {
         //given
         let jsonStr = `{
             "name": "AAA",
@@ -28,7 +28,7 @@ describe("Expln_utils_json.parseObj", (. ) => {
             | _ => fail()
         }
     })
-    it("returns a meaningful message when null is passed", (. ) => {
+    it("returns a meaningful message when null is passed", (.) => {
         //given
         let jsonStr = `null`
 
@@ -45,7 +45,7 @@ describe("Expln_utils_json.parseObj", (. ) => {
             | _ => fail()
         }
     })
-    it("returns an error message when unparsable text is passed", (. ) => {
+    it("returns an error message when unparsable text is passed", (.) => {
         //given
         let jsonStr = `null-`
 
@@ -62,7 +62,7 @@ describe("Expln_utils_json.parseObj", (. ) => {
             | _ => fail()
         }
     })
-    it("returns a meaningful message when null is passed for a non-null attribute", (. ) => {
+    it("returns a meaningful message when null is passed for a non-null attribute", (.) => {
         //given
         let jsonStr = `{
             "name": null,
@@ -82,7 +82,7 @@ describe("Expln_utils_json.parseObj", (. ) => {
             | _ => fail()
         }
     })
-    it("returns a meaningful message when a non-null attribute is absent", (. ) => {
+    it("returns a meaningful message when a non-null attribute is absent", (.) => {
         //given
         let jsonStr = `{
             "name": "vvv"
@@ -103,8 +103,8 @@ describe("Expln_utils_json.parseObj", (. ) => {
     })
 })
 
-describe("Expln_utils_json.parseObjOpt", (. ) => {
-    it("should return None when null is passed", (. ) => {
+describe("Expln_utils_json.parseObjOpt", (.) => {
+    it("should return None when null is passed", (.) => {
         //given
         let jsonStr = `null`
 
@@ -122,12 +122,40 @@ describe("Expln_utils_json.parseObjOpt", (. ) => {
     })
 })
 
-describe("pathToStr", (. ) => {
-    it("should return slash for empty path", (. ) => {
+describe("pathToStr", (.) => {
+    it("should return slash for empty path", (.) => {
         assertStr("/", pathToStr(list{}))
     })
-    it("should return slash separated values for non-empty path", (. ) => {
+    it("should return slash separated values for non-empty path", (.) => {
         assertStr("/settings/14/name", pathToStr(list{"settings", "14", "name"}))
     })
 })
 
+describe("objToTable", (.) => {
+    it("should transform an object to a table", (.) => {
+        //given
+        let json = `{
+            "id": 1244,
+            "name": "NAME--",
+            "children": [
+                {"id":888,"type":"AA"},
+                {"id":888,"type":"AA","sub":[{"sn":5},{"sn":6}]}
+            ]
+        }` -> Js_json.parseExn
+
+        //when
+//        let tbl = objToTable(
+//            json,
+//            {
+//                columnOrder: Belt_Map.String.empty,
+//                selectStages: [
+//                    selectors: [
+//                        Attr({attr:"id",name:"rootId"}),
+//                        Attr({attr:"name",name:"rootName"}),
+//                    ],
+//                    childRef = Some(json => json->obj(list{},(d,p)=>d->attr()))
+//                ]
+//            }
+//        )
+    })
+})
