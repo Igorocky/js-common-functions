@@ -85,4 +85,9 @@ let applySingleSelect:(json,selectExpr) => row =
 let mergeRows:(row,row) => row = (r1,r2) => 
     r1->Belt.Map.String.reduce(r2,(a,k,v)=>a->Belt.Map.String.set(k,v))
 
-//let select: (table, list<selectExpr>) => table = (t,s) =>
+let select: (array<json>, array<selectExpr>) => table = 
+    (t,s) => t->Belt.Array.map( o=>
+        s
+            ->Belt.Array.map(applySingleSelect(o,_))
+            ->Belt.Array.reduce(Belt.Map.String.empty,mergeRows)
+    )
