@@ -1,20 +1,21 @@
+let {log,log2} = module(Js.Console)
 let {exn,flatMapArr} = module(Expln_utils_common)
 let {classify} = module(Js.Json)
 let {reduce} = module(Belt.List)
 
 type path = list<string>
 type json = Js.Json.t
-type jsdict = Js.Dict.t<json>
+type dictjs = Js.Dict.t<json>
 
-type jsmap = Belt.Map.String.t<json>
+type mapjs = Belt.Map.String.t<json>
 let emptyRow = Belt.Map.String.empty
-type table = array<jsmap>
+type table = array<mapjs>
 type selectExpr =
     | Attr({attr:string, name:string})
-    | Func({func:jsdict=>json, name:string})
+    | Func({func:dictjs=>json, name:string})
 type selectStage = {
     selectors: array<selectExpr>,
-    childRef: option<json=>array<json>>,
+    childRef: option<json=>option<array<json>>>,
 }
 type objToTableConfig = {
     selectStages: array<selectStage>,
@@ -26,7 +27,7 @@ let pathToStr = (p: path) => switch p {
     | _ => p->reduce("", (a,b) => a ++ "/" ++ b)
 }
 
-let objOpt: (json, path, (jsdict, path) => 'a) => option<'a> = 
+let objOpt: (json, path, (dictjs, path) => 'a) => option<'a> = 
     (js, pathToThis, mapper) =>
         switch js->classify {
             | Js.Json.JSONObject(dict) => Some(mapper(dict,pathToThis))
@@ -34,11 +35,32 @@ let objOpt: (json, path, (jsdict, path) => 'a) => option<'a> =
             | _ => exn(`an object was expected at '${pathToStr(pathToThis)}'.`)
         }
 
-let obj: (json, path, (jsdict, path) => 'a) => 'a = 
+let obj: (json, path, (dictjs, path) => 'a) => 'a = 
     (js, pathToThis, mapper) => 
         switch objOpt(js,pathToThis,mapper) {
             | Some(o) => o
             | None => exn(`an object was expected at '${pathToStr(pathToThis)}'.`)
+        }
+
+let jsonToArrOpt = (js: json, pathToThis: path, mapper: (json,path) => 'a) =>
+    switch js->classify {
+        | Js.Json.JSONArray(arr) => Some(arr->Belt_Array.map(e=>mapper(e,pathToThis)))
+        | Js.Json.JSONNull => None
+        | _ => exn(`an array was expected at '${pathToStr(pathToThis)}'.`)
+    }
+
+let arrOpt: (string, dictjs, path, (json,path) => 'a) => option<array<'a>> = 
+    (name, dict, pathToParent, mapper) => 
+        switch dict -> Js.Dict.get(name) {
+            | Some(js) => jsonToArrOpt(js, list{name, ...pathToParent}, mapper)
+            | None => None
+        }
+
+let arr: (string, dictjs, path, (json,path) => 'a) => array<'a> = 
+    (name, dict, pathToParent, mapper) => 
+        switch arrOpt(name, dict, pathToParent, mapper) {
+            | Some(arr) => arr
+            | None => exn(`an array was expected at '${pathToStr(list{name, ...pathToParent})}'.`)
         }
 
 let jsonToStrOpt = (js: json, pathToThis: path) =>
@@ -48,14 +70,14 @@ let jsonToStrOpt = (js: json, pathToThis: path) =>
         | _ => exn(`a string was expected at '${pathToStr(pathToThis)}'.`)
     }
 
-let strOpt: (string, jsdict, path) => option<string> = 
+let strOpt: (string, dictjs, path) => option<string> = 
     (name, dict, pathToParent) => 
         switch dict -> Js.Dict.get(name) {
             | Some(js) => jsonToStrOpt(js, list{name, ...pathToParent})
             | None => None
         }
 
-let str: (string, jsdict, path) => string = 
+let str: (string, dictjs, path) => string = 
     (name, dict, pathToParent) => 
         switch strOpt(name, dict, pathToParent) {
             | Some(str) => str
@@ -81,7 +103,7 @@ let parseObj = (jsonStr, mapper) =>
         | Error(msg) => Error(msg)
     }
 
-let applySingleSelect:(json,selectExpr) => jsmap = 
+let applySingleSelect:(json,selectExpr) => mapjs = 
     (obj, sel) => switch obj->classify {
         | Js.Json.JSONObject(d) =>
             switch sel {
@@ -95,7 +117,7 @@ let applySingleSelect:(json,selectExpr) => jsmap =
         | _ => exn("an attempt to apply applySingleSelect to a non-object.")
     }
 
-let mergeRows:(jsmap,jsmap) => jsmap = (r1,r2) => 
+let mergeRows:(mapjs,mapjs) => mapjs = (r1,r2) => 
     r1->Belt.Map.String.reduce(r2,(a,k,v)=>a->Belt.Map.String.set(k,v))
 
 let select: (array<json>, array<selectExpr>) => table = 
@@ -116,8 +138,8 @@ let objToTable = (jsObj, cfg) => {
                         ->mergeRows(row)
                     switch stage.childRef {
                         | Some(func) => switch func(jsObj) {
-                                            | [] => [(newRow, None)]
-                                            | arr => arr->Belt_Array.map(ch=>(newRow,Some(ch)))
+                                            | Some([]) | None => [(newRow, None)]
+                                            | Some(arr) => arr->Belt_Array.map(ch=>(newRow,Some(ch)))
                                         }
                         | None => 
                             if (idx < Belt_Array.length(cfg.selectStages)-1) {

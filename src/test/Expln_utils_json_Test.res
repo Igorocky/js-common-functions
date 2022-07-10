@@ -1,4 +1,5 @@
-let {pathToStr, parseObj, parseObjOpt, str, objToTable} = module(Expln_utils_json)
+let {log,log2} = module(Js.Console)
+let {pathToStr, parseObj, parseObjOpt, str, objToTable, jsonToArrOpt, obj, arrOpt} = module(Expln_utils_json)
 let {describe,it,assertStr,assertTrue,fail} = module(Expln_test)
 
 type param = {
@@ -144,18 +145,23 @@ describe("objToTable", (.) => {
         }` -> Js_json.parseExn
 
         //when
-//        let tbl = objToTable(
-//            json,
-//            {
-//                columnOrder: Belt_Map.String.empty,
-//                selectStages: [
-//                    selectors: [
-//                        Attr({attr:"id",name:"rootId"}),
-//                        Attr({attr:"name",name:"rootName"}),
-//                    ],
-//                    childRef = Some(json => json->obj(list{},(d,p)=>d->attr()))
-//                ]
-//            }
-//        )
+        let tbl = objToTable(
+            json,
+            {
+                columnOrder: Belt_Map.String.empty,
+                selectStages: [
+                    {
+                        selectors: [
+                            Attr({attr:"id",name:"rootId"}),
+                            Attr({attr:"name",name:"rootName"}),
+                        ],
+                        childRef: Some(json => obj(json,list{},(d,p) => arrOpt("children",d,p,(d,p)=>d)))
+                    }
+                ]
+            }
+        )
+
+        //then
+        log2("tbl", tbl)
     })
 })
