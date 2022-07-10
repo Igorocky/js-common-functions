@@ -114,10 +114,12 @@ let jsonToStr = json =>
         | Js_json.JSONArray(_) => "<array>"
     }
 
-let rowToStr: mapjs => string = row =>
-    row -> Belt_Map.String.keysToArray 
+let rowToStr: mapjs => string = row => {
+    let content = row -> Belt_Map.String.keysToArray 
         -> Belt_Array.map(k => `"${k}": "${row->Belt_Map.String.getExn(k)->jsonToStr}"`)
         -> Belt_Array.reduce("", (a,e) => e ++ ", ")
+    "{" ++ content ++ "}"
+}
 
 let applySingleSelect:(json,selectExpr) => mapjs = 
     (obj, sel) => switch obj->classify {
