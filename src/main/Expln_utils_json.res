@@ -1,5 +1,5 @@
 let {log,log2} = module(Js.Console)
-let {exn,flatMapArr} = module(Expln_utils_common)
+let {exn,flatMapArr,cast} = module(Expln_utils_common)
 let {classify} = module(Js.Json)
 let {reduce} = module(Belt.List)
 
@@ -7,17 +7,17 @@ type path = list<string>
 type json = Js.Json.t
 type dictjs = Js.Dict.t<json>
 
-let emptyDict = Js.Dict.empty
+let emptyDict = Js.Dict.empty()
 type table = array<dictjs>
-type selectExpr =
+type selectExpr<'a> =
     | Attr({attr:string, name:string})
-    | Func({func:dictjs=>json, name:string})
-type selectStage = {
-    selectors: array<selectExpr>,
-    childRef: option<json=>option<array<json>>>,
+    | Func({func:'a=>json, name:string})
+type selectStage<'a> = {
+    selectors: array<selectExpr<'a>>,
+    childRef: option<'a=>option<array<'a>>>,
 }
-type objToTableConfig = {
-    selectStages: array<selectStage>,
+type objToTableConfig<'a> = {
+    selectStages: array<selectStage<'a>>,
     columnOrder: Belt.Map.String.t<int>,
 }
 
@@ -41,17 +41,17 @@ let obj_ = (json, pathToJson, mapper) =>
     | None => exn(`an object was expected at '${pathToStr(pathToJson)}'.`)
     }
 
-let objOpt: (dictjs,string,path,(json,path)=>'a) => option<'a> = 
-(dict,attrName,pathToDict,mapper) =>
+let objOpt: (string,dictjs,path,(json,path)=>'a) => option<'a> = 
+(attrName,dict,pathToDict,mapper) =>
     switch dict->Js_dict.get(attrName) {
     | Some(json) => Some(mapper(json,list{attrName,...pathToDict}))
     | None => None
     }
 
-let obj = (dict,attrName,pathToDict,mapper) =>
-    switch objOpt(dict,attrName,pathToDict,mapper) {
+let obj = (attrName,dict,pathToDict,mapper) =>
+    switch objOpt(attrName,dict,pathToDict,mapper) {
     | Some(o) => o
-    | None => exn(`an object was expected at '${pathToStr(pathToDict)}'.`)
+    | None => exn(`an object was expected at '${pathToStr(list{attrName, ...pathToDict})}'.`)
     }
     
 let arrOpt_: (json, path, (json, path) => 'a) => option<array<'a>> = 
@@ -70,17 +70,17 @@ let arr_ = (json, pathToJson, mapper) =>
     | None => exn(`an array was expected at '${pathToStr(pathToJson)}'.`)
     }
 
-let arrOpt: (dictjs,string,path,(json,path)=>'a) => option<array<'a>> = 
-(dict,attrName,pathToDict,mapper) =>
+let arrOpt: (string,dictjs,path,(json,path)=>'a) => option<array<'a>> = 
+(attrName,dict,pathToDict,mapper) =>
     switch dict->Js_dict.get(attrName) {
     | Some(json) => arrOpt_(json,list{attrName,...pathToDict},mapper)
     | None => None
     }
 
-let arr = (dict,attrName,pathToDict,mapper) =>
-    switch arrOpt(dict,attrName,pathToDict,mapper) {
+let arr = (attrName,dict,pathToDict,mapper) =>
+    switch arrOpt(attrName,dict,pathToDict,mapper) {
     | Some(a) => a
-    | None => exn(`an array was expected at '${pathToStr(pathToDict)}'.`)
+    | None => exn(`an array was expected at '${pathToStr(list{attrName, ...pathToDict})}'.`)
     }
 
 let strOpt_: (json, path) => option<string> = 
@@ -98,17 +98,17 @@ let str_ = (json, pathToJson) =>
     | None => exn(`a string was expected at '${pathToStr(pathToJson)}'.`)
     }
 
-let strOpt: (dictjs,string,path) => option<string> = 
-(dict,attrName,pathToDict) =>
+let strOpt: (string,dictjs,path) => option<string> = 
+(attrName,dict,pathToDict) =>
     switch dict->Js_dict.get(attrName) {
     | Some(json) => strOpt_(json,list{attrName,...pathToDict})
     | None => None
     }
 
-let str = (dict,attrName,pathToDict) =>
-    switch strOpt(dict,attrName,pathToDict) {
+let str = (attrName,dict,pathToDict) =>
+    switch strOpt(attrName,dict,pathToDict) {
     | Some(s) => s
-    | None => exn(`a string was expected at '${pathToStr(pathToDict)}'.`)
+    | None => exn(`a string was expected at '${pathToStr(list{attrName, ...pathToDict})}'.`)
     }
 
 let parseObjOpt: (string,(dictjs,path)=>'a) => result<option<'a>,string> = (jsonStr, mapper) => try {
@@ -130,19 +130,27 @@ let parseObj = (jsonStr, mapper) =>
         | Error(msg) => Error(msg)
     }
 
-let applySingleSelect:(json,selectExpr) => dictjs = 
-    (obj, sel) => switch obj->classify {
-        | Js.Json.JSONObject(d) =>
-            switch sel {
-                | Attr({attr,name}) => 
-                    switch d->Js.Dict.get(attr) {
-                        | Some(v) => Js_dict.fromArray([(name,v)])
-                        | None => Js_dict.fromArray([(name,Js.Json.null)])
-                    }
-                | Func({func,name}) => Js_dict.fromArray([(name,func(d))])
+let applySingleSelect:('a,selectExpr<'a>) => dictjs = 
+(obj, sel) =>             
+    switch sel {
+    | Attr({attr,name}) => 
+        if (!Js_json.test(obj,Js_json.Object)) {
+            exn(`An attempt to apply Attr("${attr}") selector for a non-json object.`)
+        } else {
+            switch cast(obj)->classify {
+            | Js_json.JSONObject(dict) =>
+                switch dict->Js.Dict.get(attr) {
+                | Some(v) => Js_dict.fromArray([(name,v)])
+                | None => Js_dict.empty()
+                }
+            | _ => exn(`Should never happen.`)
             }
-        | _ => exn("an attempt to apply applySingleSelect to a non-object.")
+        }
+    | Func({func,name}) => Js_dict.fromArray([(name,func(obj))])
     }
+
+let v = applySingleSelect(1, Func({func:_=>Js_json.number(3.), name:"gggg"}))
+
 
 let mergeRows:(dictjs,dictjs) => dictjs = (r1,r2) => {
     let result = r1->Js_dict.entries->Js_dict.fromArray
@@ -150,15 +158,15 @@ let mergeRows:(dictjs,dictjs) => dictjs = (r1,r2) => {
     result
 }
 
-let select: (array<json>, array<selectExpr>) => table = 
+let select: (array<'a>, array<selectExpr<'a>>) => array<dictjs> = 
     (t,s) => t->Belt.Array.map( o=>
         s->Belt.Array.map(applySingleSelect(o,_))
             ->Belt.Array.reduce(emptyDict,mergeRows)
     )
 
-let objToTable = (jsObj, cfg) => {
+let objToTable:('a,objToTableConfig<'a>) => array<dictjs> = (json, cfg) => {
     cfg.selectStages->Belt.Array.reduceWithIndex(
-        [(emptyDict,Some(jsObj))],
+        [(emptyDict,Some(json))],
         (acc, stage, idx) => {
             acc->flatMapArr( ( (row,jsObjOpt) ) => switch jsObjOpt {
                 | None => [(row,jsObjOpt)]

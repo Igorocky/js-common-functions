@@ -1,5 +1,5 @@
 let {log,log2} = module(Js.Console)
-let {pathToStr, parseObj, parseObjOpt, str, objToTable, jsonToArrOpt, obj, arrOpt} = module(Expln_utils_json)
+let {pathToStr, parseObj, parseObjOpt, str, objToTable, arrOpt_, obj, obj_, arrOpt} = module(Expln_utils_json)
 let {describe,it,assertStr,assertTrue,fail} = module(Expln_test)
 
 type param = {
@@ -155,13 +155,13 @@ describe("objToTable", (.) => {
                             Attr({attr:"id",name:"rootId"}),
                             Attr({attr:"name",name:"rootName"}),
                         ],
-                        childRef: Some(json => obj(json,list{},(d,p) => arrOpt("children",d,p,(d,p)=>d)))
+                        childRef: Some(json => obj_(json,list{},(d,p) => arrOpt("children",d,p,(d,p)=>d)))
                     }
                 ]
             }
         )
 
         //then
-        tbl->Belt_Array.forEach(e => log(Expln_utils_json.rowToStr(e)))
+        tbl->Belt_Array.forEach(e => log(Js_json.stringifyAny(e)))
     })
 })
