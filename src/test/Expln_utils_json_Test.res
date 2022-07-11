@@ -140,7 +140,7 @@ describe("objToTable", (.) => {
             "name": "NAME--",
             "children": [
                 {"id":888,"type":"AA"},
-                {"id":888,"type":"AA","sub":[{"sn":5},{"sn":6}]}
+                {"id":22222,"type":"cRR","sub":[{"sn":5},{"sn":6}]}
             ]
         }` -> Js_json.parseExn
 
@@ -156,6 +156,19 @@ describe("objToTable", (.) => {
                             Attr({attr:"name",name:"rootName"}),
                         ],
                         childRef: Some(json => obj_(json,list{},(d,p) => arrOpt("children",d,p,(d,p)=>d)))
+                    }
+                    ,{
+                        selectors: [
+                            Attr({attr:"id",name:"childId"}),
+                            Attr({attr:"type",name:"type"}),
+                        ],
+                        childRef: Some(json => obj_(json,list{},(d,p) => arrOpt("sub",d,p,(d,p)=>d)))
+                    }
+                    ,{
+                        selectors: [
+                            Attr({attr:"sn",name:"sn"}),
+                        ],
+                        childRef: None
                     }
                 ]
             }
