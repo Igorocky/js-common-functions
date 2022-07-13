@@ -164,7 +164,7 @@ let select: (array<'a>, array<selectExpr<'a>>) => array<dictjs> =
             ->Belt.Array.reduce(emptyDict,mergeRows)
     )
 
-let objToTable:('a,objToTableConfig<'a>) => array<dictjs> = (json, cfg) => {
+let objToTable:('a,objToTableConfig<'a>) => array<(dictjs,option<'a>)> = (json, cfg) => {
     cfg.selectStages->Belt.Array.reduceWithIndex(
         [(emptyDict,Some(json))],
         (acc, stage, idx) => {
@@ -188,5 +188,5 @@ let objToTable:('a,objToTableConfig<'a>) => array<dictjs> = (json, cfg) => {
                     }
             })
         }
-    ) -> Belt_Array.map(( (row,_) ) => row)
+    ) 
 }

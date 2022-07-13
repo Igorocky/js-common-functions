@@ -1,6 +1,6 @@
 let {log,log2} = module(Js.Console)
 let {pathToStr, parseObj, parseObjOpt, str, objToTable, arrOpt_, obj, obj_, arrOpt} = module(Expln_utils_json)
-let {describe,it,assertStr,assertTrue,fail} = module(Expln_test)
+let {describe,it,assertEq,assertTrue,fail} = module(Expln_test)
 
 type param = {
     name: string,
@@ -24,8 +24,8 @@ describe("Expln_utils_json.parseObj", (.) => {
         //then
         switch p {
             | Ok(param) =>
-                assertStr("AAA", param.name)
-                assertStr("BBB", param.value)
+                assertEq("AAA", param.name)
+                assertEq("BBB", param.value)
             | _ => fail()
         }
     })
@@ -42,7 +42,7 @@ describe("Expln_utils_json.parseObj", (.) => {
         //then
         switch p {
             | Error(msg) =>
-                assertStr("An object was expected.", msg)
+                assertEq("An object was expected.", msg)
             | _ => fail()
         }
     })
@@ -59,7 +59,7 @@ describe("Expln_utils_json.parseObj", (.) => {
         //then
         switch p {
             | Error(msg) =>
-                assertStr("Parse error: Unexpected number in JSON at position 4", msg)
+                assertEq("Parse error: Unexpected number in JSON at position 4", msg)
             | _ => fail()
         }
     })
@@ -79,7 +79,7 @@ describe("Expln_utils_json.parseObj", (.) => {
         //then
         switch p {
             | Error(msg) =>
-                assertStr("Parse error: a string was expected at '/name'.", msg)
+                assertEq("Parse error: a string was expected at '/name'.", msg)
             | _ => fail()
         }
     })
@@ -98,7 +98,7 @@ describe("Expln_utils_json.parseObj", (.) => {
         //then
         switch p {
             | Error(msg) =>
-                assertStr("Parse error: a string was expected at '/value'.", msg)
+                assertEq("Parse error: a string was expected at '/value'.", msg)
             | _ => fail()
         }
     })
@@ -125,10 +125,10 @@ describe("Expln_utils_json.parseObjOpt", (.) => {
 
 describe("pathToStr", (.) => {
     it("should return slash for empty path", (.) => {
-        assertStr("/", pathToStr(list{}))
+        assertEq("/", pathToStr(list{}))
     })
     it("should return slash separated values for non-empty path", (.) => {
-        assertStr("/settings/14/name", pathToStr(list{"settings", "14", "name"}))
+        assertEq("/settings/14/name", pathToStr(list{"settings", "14", "name"}))
     })
 })
 
@@ -172,7 +172,7 @@ describe("objToTable", (.) => {
                     }
                 ]
             }
-        )
+        ) -> Belt_Array.map(( (dictjs,_) ) => dictjs)
 
         //then
         tbl->Belt_Array.forEach(e => log(Js_json.stringifyAny(e)))
