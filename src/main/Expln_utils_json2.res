@@ -1,37 +1,45 @@
-let {log,log2} = module(Js.Console)
-let {exn,flatMapArr,cast} = module(Expln_utils_common)
+let {exn} = module(Expln_utils_common)
 let {classify} = module(Js.Json)
 let {reduce} = module(Belt.List)
 
 type path = list<string>
 let rootPath = list{}
-type json = Js.Json.t
-type dictjs = Js.Dict.t<json>
-let emptyDict = Js.Dict.empty()
 
 let pathToStr = (p: path) => switch p {
     | list{} => "/"
     | _ => p->reduce("", (a,b) => a ++ "/" ++ b)
 }
 
+let pathToStr2 = (path,attrName) => pathToStr(list{attrName, ...path})
+
+type json = Js.Json.t
+
 type jsonAny = 
     | JsonNull(path)
-    | JsonDict(Js_dict.t<Js_json.t>, path)
+    | JsonObj(Js_dict.t<Js_json.t>, path)
     | JsonArr(array<Js_json.t>, path)
     | JsonStr(string, path)
 
 let jsonToAny: (json,path) => jsonAny = (json,path) =>
     switch json->classify {
         | Js_json.JSONNull => JsonNull(path)
-        | Js_json.JSONObject(dict) => JsonDict(dict,path)
+        | Js_json.JSONObject(dict) => JsonObj(dict,path)
         | Js_json.JSONArray(arr) => JsonArr(arr,path)
         | Js_json.JSONString(str) => JsonStr(str,path)
         | _ => exn("Not implemented.")
     }
 
-let attrOpt: (string, jsonAny, (json,path) => option<'a>) => option<'a> = (attrName, jsonAny, mapper) =>
+let getPath = jsonAny => 
     switch jsonAny {
-        | JsonDict(dict,path) => 
+        | JsonNull(path) | JsonObj(_,path) | JsonArr(_,path) | JsonStr(_,path) => path
+    }
+
+let location = jsonAny => jsonAny -> getPath -> pathToStr
+let location2 = (jsonAny,nextPathElem) => jsonAny -> getPath -> pathToStr2(_,nextPathElem)
+
+let attrOpt: (jsonAny, string, (json,path) => option<'a>) => option<'a> = (jsonAny, attrName, mapper) =>
+    switch jsonAny {
+        | JsonObj(dict,path) => 
             switch dict->Js_dict.get(attrName) {
                 | Some(json) => mapper(json,list{attrName, ...path})
                 | None => None
@@ -39,8 +47,8 @@ let attrOpt: (string, jsonAny, (json,path) => option<'a>) => option<'a> = (attrN
         | JsonNull(path) | JsonStr(_,path) | JsonArr(_,path) => exn(`an object was expected at '${pathToStr(path)}'.`)
     }
 
-let objOpt: (string, jsonAny, jsonAny => 'a) => option<'a> = (attrName, jsonAny, mapper) =>
-    attrOpt(attrName, jsonAny, (json,path) => 
+let objOpt: (jsonAny, string, jsonAny => 'a) => option<'a> = (jsonAny, attrName, mapper) =>
+    attrOpt(jsonAny, attrName, (json,path) =>
         switch json->classify {
             | Js_json.JSONNull => None
             | Js_json.JSONObject(_) => Some(json -> jsonToAny(path) -> mapper)
@@ -48,8 +56,14 @@ let objOpt: (string, jsonAny, jsonAny => 'a) => option<'a> = (attrName, jsonAny,
         }
     )
 
-let arrOpt: (string, jsonAny, jsonAny => 'a) => option<array<'a>> = (attrName, jsonAny, mapper) =>
-    attrOpt(attrName, jsonAny, (json,path) => 
+let obj: (jsonAny, string, jsonAny => 'a) => 'a = (jsonAny, attrName, mapper) =>
+    switch objOpt(jsonAny, attrName, mapper) {
+        | Some(o) => o
+        | None => exn(`an object was expected at '${location2(jsonAny, attrName)}'.`)
+    }
+
+let arrOpt: (jsonAny, string, jsonAny => 'a) => option<array<'a>> = (jsonAny, attrName, mapper) =>
+    attrOpt(jsonAny, attrName, (json,path) =>
         switch json->classify {
             | Js_json.JSONNull => None
             | Js_json.JSONArray(arr) => 
@@ -62,8 +76,14 @@ let arrOpt: (string, jsonAny, jsonAny => 'a) => option<array<'a>> = (attrName, j
         }
     )
 
-let strOpt: (string, jsonAny) => option<string> = (attrName, jsonAny) =>
-    attrOpt(attrName, jsonAny, (json,path) => 
+let arr: (jsonAny, string, jsonAny => 'a) => array<'a> = (jsonAny, attrName, mapper) =>
+    switch arrOpt(jsonAny, attrName, mapper) {
+        | Some(a) => a
+        | None => exn(`an array was expected at '${location2(jsonAny, attrName)}'.`)
+    }
+
+let strOpt: (jsonAny, string) => option<string> = (jsonAny, attrName) =>
+    attrOpt(jsonAny, attrName, (json,path) =>
         switch json->classify {
             | Js_json.JSONNull => None
             | Js_json.JSONString(str) => Some(str)
@@ -71,9 +91,18 @@ let strOpt: (string, jsonAny) => option<string> = (attrName, jsonAny) =>
         }
     )
 
-let parseObjOpt: (string, jsonAny=>option<'a>) => result<option<'a>,string> = (jsonStr, mapper) => try {
-    let json = jsonStr -> Js.Json.parseExn
-    Ok(mapper(jsonToAny(json, rootPath)))
+let str: (jsonAny, string) => string = (jsonAny, attrName) =>
+    switch strOpt(jsonAny, attrName) {
+        | Some(s) => s
+        | None => exn(`a string was expected at '${location2(jsonAny, attrName)}'.`)
+    }
+
+let parseObjOpt: (string, jsonAny=>'a) => result<option<'a>,string> = (jsonStr, mapper) => try {
+    switch jsonStr -> Js.Json.parseExn -> classify {
+        | Js_json.JSONNull => Ok(None)
+        | Js_json.JSONObject(dict) => JsonObj(dict, rootPath) -> mapper -> Some -> Ok
+        | _ => exn(`an object was expected at '/'.`)
+    }
 } catch {
     | ex =>
         let msg = ex 
@@ -82,3 +111,10 @@ let parseObjOpt: (string, jsonAny=>option<'a>) => result<option<'a>,string> = (j
             -> Belt.Option.getWithDefault("no message was provided.")
         Error( "Parse error: " ++ msg)
 }
+
+let parseObj: (string, jsonAny=>'a) => result<'a,string> = (jsonStr, mapper) => 
+    switch parseObjOpt(jsonStr, mapper) {
+        | Ok(Some(obj)) => Ok(obj)
+        | Error(str) => Error(str)
+        | _ => Error(`Parse error: an object was expected at '/'.`)
+    }
