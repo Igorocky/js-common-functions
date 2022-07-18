@@ -1,5 +1,5 @@
 let {log,log2} = module(Js.Console)
-let {parseObjOpt, parseObj, str} = module(Expln_utils_json2)
+let {parseObjOpt, parseObj, str} = module(Expln_utils_jsonParse)
 let {describe,it,assertEq,assertTrue,fail} = module(Expln_test)
 
 type param = {
@@ -123,14 +123,6 @@ describe("Expln_utils_json.parseObjOpt", (.) => {
     })
 })
 
-//describe("pathToStr", (.) => {
-//    it("should return slash for empty path", (.) => {
-//        assertEq("/", pathToStr(list{}))
-//    })
-//    it("should return slash separated values for non-empty path", (.) => {
-//        assertEq("/settings/14/name", pathToStr(list{"settings", "14", "name"}))
-//    })
-//})
 
 //describe("objToTable", (.) => {
 //    it("should transform an object to a table", (.) => {
@@ -178,3 +170,5 @@ describe("Expln_utils_json.parseObjOpt", (.) => {
 //        tbl->Belt_Array.forEach(e => log(Js_json.stringifyAny(e)))
 //    })
 //})
+
+Expln_utils_jsonParse.runTests___()

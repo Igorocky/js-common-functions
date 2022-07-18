@@ -1,3 +1,5 @@
+let {describe,it,assertEq,assertTrue,fail} = module(Expln_test)
+
 let {exn} = module(Expln_utils_common)
 let {classify} = module(Js.Json)
 let {reduce} = module(Belt.List)
@@ -118,3 +120,14 @@ let parseObj: (string, jsonAny=>'a) => result<'a,string> = (jsonStr, mapper) =>
         | Error(str) => Error(str)
         | _ => Error(`Parse error: an object was expected at '/'.`)
     }
+
+let runTests___ = () => {
+    describe("pathToStr", (.) => {
+        it("should return slash for empty path", (.) => {
+            assertEq("/", pathToStr(list{}))
+        })
+        it("should return slash separated values for non-empty path", (.) => {
+            assertEq("/settings/14/name", pathToStr(list{"settings", "14", "name"}))
+        })
+    })
+}

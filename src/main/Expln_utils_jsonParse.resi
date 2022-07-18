@@ -11,3 +11,5 @@ let arr: (jsonAny, string, jsonAny => 'a) => array<'a>
 
 let strOpt: (jsonAny, string) => option<string>
 let str: (jsonAny, string) => string
+
+let runTests___: unit => unit
