@@ -1,4 +1,4 @@
-let {describe,it,assertEq,assertTrue,fail} = module(Expln_test)
+let {describe,it,assertEq} = module(Expln_test)
 
 let {exn} = module(Expln_utils_common)
 let {classify} = module(Js.Json)
@@ -36,7 +36,7 @@ let getPath = jsonAny =>
         | JsonNull(path) | JsonObj(_,path) | JsonArr(_,path) | JsonStr(_,path) => path
     }
 
-let location = jsonAny => jsonAny -> getPath -> pathToStr
+//let location = jsonAny => jsonAny -> getPath -> pathToStr
 let location2 = (jsonAny,nextPathElem) => jsonAny -> getPath -> pathToStr2(_,nextPathElem)
 
 let attrOpt: (jsonAny, string, (json,path) => option<'a>) => option<'a> = (jsonAny, attrName, mapper) =>

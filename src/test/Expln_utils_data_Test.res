@@ -1,5 +1,5 @@
 let {log,log2} = module(Js.Console)
-let {objToTable} = module(Expln_utils_data)
+let {objToTable, objToTableWithChildren} = module(Expln_utils_data)
 let {parseObj, arrOpt} = module(Expln_utils_jsonParse)
 let {id} = module(Expln_utils_common)
 let {describe,it,assertEq,assertTrue,fail} = module(Expln_test)
@@ -7,7 +7,7 @@ let {describe,it,assertEq,assertTrue,fail} = module(Expln_test)
 describe("objToTable", (.) => {
     it("should transform an object to a table", (.) => {
         //given
-        let json = `{
+        let jsonAny = `{
             "id": 1244,
             "name": "NAME--",
             "children": [
@@ -15,9 +15,10 @@ describe("objToTable", (.) => {
                 {"id":22222,"type":"cRR","sub":[{"sn":5},{"sn":6}]}
             ]
         }` -> parseObj(id)->Belt_Result.getExn
+        let json = jsonAny
 
         //when
-        let tbl = objToTable(
+        let tbl = objToTableWithChildren(
             json,
             [
                 {
@@ -44,6 +45,6 @@ describe("objToTable", (.) => {
         ) 
 
         //then
-        tbl->Belt_Array.forEach(e => log(Js_json.stringifyAny(e)))
+        log(tbl)
     })
 })
