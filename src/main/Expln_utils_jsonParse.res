@@ -99,6 +99,21 @@ let str: (jsonAny, string) => string = (jsonAny, attrName) =>
         | None => exn(`a string was expected at '${location2(jsonAny, attrName)}'.`)
     }
 
+let numOpt: (jsonAny, string) => option<float> = (jsonAny, attrName) =>
+    attrOpt(jsonAny, attrName, (json,path) =>
+        switch json->classify {
+            | Js_json.JSONNull => None
+            | Js_json.JSONNumber(num) => Some(num)
+            | _ => exn(`a number was expected at '${pathToStr(path)}'.`)
+        }
+    )
+
+let num: (jsonAny, string) => float = (jsonAny, attrName) =>
+    switch numOpt(jsonAny, attrName) {
+        | Some(n) => n
+        | None => exn(`a number was expected at '${location2(jsonAny, attrName)}'.`)
+    }
+
 let parseObjOpt: (string, jsonAny=>'a) => result<option<'a>,string> = (jsonStr, mapper) => try {
     switch jsonStr -> Js.Json.parseExn -> classify {
         | Js_json.JSONNull => Ok(None)

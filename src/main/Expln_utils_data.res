@@ -1,54 +1,36 @@
+open Expln_common_bindings
+
 let {log,log2} = module(Js.Console)
-let {exn,flatMapArr,cast} = module(Expln_utils_common)
-let {classify} = module(Js_json)
 
-type json = Js.Json.t
-type dictjs = Js.Dict.t<json>
-
-type selectExpr<'a> =
-    | Attr({attr:string, alias:string})
-    | Func({func:'a=>json, alias:string})
-type selectStage<'a> = {
-    selectors: array<selectExpr<'a>>,
+type selectExpr<'a,'b> = 'a=>(string,'b)
+type selectStage<'a,'b> = {
+    selectors: array<selectExpr<'a,'b>>,
     childRef: option<'a=>option<array<'a>>>,
 }
 
-let applySingleSelect:('a,selectExpr<'a>) => dictjs = 
-(obj, sel) =>             
-    switch sel {
-    | Attr({attr,alias}) => 
-        if (!Js_json.test(obj,Js_json.Object)) {
-            exn(`An attempt to apply Attr("${attr}") selector for a non-json object.`)
-        } else {
-            switch cast(obj)->classify {
-            | Js_json.JSONObject(dict) =>
-                switch dict->Js.Dict.get(attr) {
-                | Some(v) => Js_dict.fromArray([(alias,v)])
-                | None => Js_dict.empty()
-                }
-            | _ => exn(`Should never happen.`)
-            }
-        }
-    | Func({func,alias}) => Js_dict.fromArray([(alias,func(obj))])
-    }
+let applySingleSelect:('a,selectExpr<'a,'b>) => Js.Dict.t<'b> = 
+(obj, sel) => Js_dict.fromArray([sel(obj)])
 
-let mergeRows:(dictjs,dictjs) => dictjs = (r1,r2) => {
+let mergeRows:(Js_dict.t<'b>,Js_dict.t<'b>) => Js_dict.t<'b> = (r1,r2) => {
     let result = r1->Js_dict.entries->Js_dict.fromArray
     r2->Js_dict.entries->Belt_Array.forEach(((k,v)) => result->Js_dict.set(k,v))
     result
 }
 
-let select: (array<'a>, array<selectExpr<'a>>) => array<dictjs> = 
-    (t,s) => t->Belt.Array.map( o=>
-        s->Belt.Array.map(applySingleSelect(o,_))
-            ->Belt.Array.reduce(Js_dict.empty(),mergeRows)
-    )
+let select: (array<'a>, array<selectExpr<'a,'b>>) => array<Js_dict.t<'b>> = 
+    (objects,selectors) => {
+        objects->arrMap( o=>
+                        selectors->arrMap(applySingleSelect(o,_))
+            ->arrRed(Js.Dict.empty(),mergeRows)
 
-let objToTableWithChildren:('a,array<selectStage<'a>>) => array<(dictjs,option<'a>)> = (json, selectStages) => {
+        )
+    }
+
+let objToTableWithChildren:('a,array<selectStage<'a,'b>>) => array<(Js_dict.t<'b>,option<'a>)> = (json, selectStages) => {
     selectStages->Belt.Array.reduceWithIndex(
         [(Js_dict.empty(),Some(json))],
         (acc, stage, idx) => {
-            acc->flatMapArr( ( (row,jsObjOpt) ) => switch jsObjOpt {
+            acc->arrFlatMap( ( (row,jsObjOpt) ) => switch jsObjOpt {
                 | None => [(row,jsObjOpt)]
                 | Some(jsObj) =>
                     let newRow = select([jsObj], stage.selectors)
@@ -73,4 +55,4 @@ let objToTableWithChildren:('a,array<selectStage<'a>>) => array<(dictjs,option<'
 
 let objToTable = (json, selectStages) => 
     objToTableWithChildren(json, selectStages) 
-    -> Belt_Array.map(( (dictjs,_) ) => dictjs)
+    -> arrMap(( (dictjs,_) ) => dictjs)

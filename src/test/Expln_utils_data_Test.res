@@ -1,6 +1,6 @@
 let {log,log2} = module(Js.Console)
 let {objToTable, objToTableWithChildren} = module(Expln_utils_data)
-let {parseObj, arrOpt} = module(Expln_utils_jsonParse)
+let {parseObj, arrOpt, num, str} = module(Expln_utils_jsonParse)
 let {id} = module(Expln_utils_common)
 let {describe,it,assertEq,assertTrue,fail} = module(Expln_test)
 
@@ -15,29 +15,28 @@ describe("objToTable", (.) => {
                 {"id":22222,"type":"cRR","sub":[{"sn":5},{"sn":6}]}
             ]
         }` -> parseObj(id)->Belt_Result.getExn
-        let json = jsonAny
 
         //when
-        let tbl = objToTableWithChildren(
-            json,
+        let tbl = objToTable(
+            jsonAny,
             [
                 {
                     selectors: [
-                        Attr({attr:"id",alias:"rootId"}),
-                        Attr({attr:"name",alias:"rootName"}),
+                        ja=>("rootId", num(ja,"id")->Js_json.number),
+                        ja=>("rootName", str(ja,"name")->Js_json.string),
                     ],
                     childRef: Some(arrOpt(_, "children", id))
                 }
                 ,{
                     selectors: [
-                        Attr({attr:"id",alias:"childId"}),
-                        Attr({attr:"type",alias:"type"}),
+                        ja=>("childId", num(ja,"id")->Js_json.number),
+                        ja=>("type", str(ja,"type")->Js_json.string),
                     ],
                     childRef: Some(arrOpt(_, "sub", id))
                 }
                 ,{
                     selectors: [
-                        Attr({attr:"sn",alias:"sn"}),
+                        ja=>("sn", num(ja,"sn")->Js_json.number),
                     ],
                     childRef: None
                 }
