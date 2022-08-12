@@ -34,6 +34,14 @@ object Tools {
 
         pack()
 
+        log("""
+            Next commands:
+            --------------------------------
+            npm login
+            npm publish --access public
+            --------------------------------
+        """.trimIndent())
+
         println("Done.")
     }
 
@@ -60,7 +68,7 @@ object Tools {
         log("clean")
         val result: Pair<String?, Matcher?>? = runCommand(
             "npm run clean",
-            compile(".*Cleaning completed\\..*")
+            compile("^Cleaning completed\\.$")
         )
         if (result == null || result.first?.contains("BUILD FAILED")?:true) {
             throw RuntimeException("Project cleaning failed.")
@@ -81,8 +89,8 @@ object Tools {
     private fun pack() {
         log("pack")
         val result: Pair<String?, Matcher?>? = runCommand(
-            "npm pack",
-            compile(".*hhhhhhhhhhhhhhhhhh.*")
+            "npm pack && echo Pack completed.",
+            compile("^Pack completed.$")
         )
         if (result == null || result.first?.contains("BUILD FAILED")?:true) {
             throw RuntimeException("Project pack failed.")
