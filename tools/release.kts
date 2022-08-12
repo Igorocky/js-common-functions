@@ -38,6 +38,7 @@ object Tools {
     }
 
     fun increaseVersion() {
+        val releaseVersion = getCurrVersionName()
         incProjectVersion()
         val newDevVersion = getCurrVersionName()
 
