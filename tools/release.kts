@@ -1,3 +1,5 @@
+import Release.Action.INCREASE_VERSION
+import Release.Action.PREPARE_RELEASE
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
@@ -5,12 +7,21 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 import java.util.regex.Pattern.compile
 
-Tools.release()
+enum class Action {
+    PREPARE_RELEASE, INCREASE_VERSION
+}
+
+val action = Action.valueOf(args[0])
+
+when (action) {
+    PREPARE_RELEASE -> Tools.prepareRelease()
+    INCREASE_VERSION -> Tools.increaseVersion()
+}
 
 object Tools {
     private val versionPattern = ".*\"version\":\\s*\"(\\d+)\\.(\\d+)\\.(\\d+)\",.*"
 
-    fun release() {
+    fun prepareRelease() {
         checkWorkingDirectory()
 
         clean()
@@ -21,6 +32,12 @@ object Tools {
         tag(tagName)
 //        log("<<<tag>>>: " + tagName)
 
+        pack()
+
+        println("Done.")
+    }
+
+    fun increaseVersion() {
         incProjectVersion()
         val newDevVersion = getCurrVersionName()
 
@@ -45,7 +62,7 @@ object Tools {
             compile(".*Cleaning completed\\..*")
         )
         if (result == null || result.first?.contains("BUILD FAILED")?:true) {
-            throw RuntimeException("Project build failed.")
+            throw RuntimeException("Project cleaning failed.")
         }
     }
 
@@ -57,6 +74,17 @@ object Tools {
         )
         if (result == null || result.first?.contains("BUILD FAILED")?:true) {
             throw RuntimeException("Project build failed.")
+        }
+    }
+
+    private fun pack() {
+        log("pack")
+        val result: Pair<String?, Matcher?>? = runCommand(
+            "npm pack",
+            compile(".*hhhhhhhhhhhhhhhhhh.*")
+        )
+        if (result == null || result.first?.contains("BUILD FAILED")?:true) {
+            throw RuntimeException("Project pack failed.")
         }
     }
 
