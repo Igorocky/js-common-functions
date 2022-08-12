@@ -11,24 +11,21 @@ object Tools {
     private val versionPattern = ".*\"version\":\\s*\"(\\d+)\\.(\\d+)\\.(\\d+)\",.*"
 
     fun release() {
-//        checkWorkingDirectory()
+        checkWorkingDirectory()
+
+        clean()
+        buildProject()
 
         val releaseVersion = getCurrVersionName()
         val tagName = "v-$releaseVersion"
-
-//        commit(tagName)
-        log("<<<commit>>>: " + tagName)
-
-        buildProject()
-
-//        tag(tagName)
-        log("<<<tag>>>: " + tagName)
+        tag(tagName)
+//        log("<<<tag>>>: " + tagName)
 
         incProjectVersion()
         val newDevVersion = getCurrVersionName()
 
-//        commit("Increase version from ${releaseVersion} to ${newDevVersion}")
-        log("<<<commit>>>: Increase version from ${releaseVersion} to ${newDevVersion}")
+        commit("Increase version from ${releaseVersion} to ${newDevVersion}")
+//        log("<<<commit>>>: Increase version from ${releaseVersion} to ${newDevVersion}")
 
         println("Done.")
     }
@@ -39,6 +36,17 @@ object Tools {
             "git status",
             compile("nothing to commit, working tree clean")
         ) ?: throw RuntimeException("Working directory is not clean.")
+    }
+
+    private fun clean() {
+        log("clean")
+        val result: Pair<String?, Matcher?>? = runCommand(
+            "npm run clean",
+            compile(".*\\d+ passing \\(\\d+ms\\).*")
+        )
+        if (result == null || result.first?.contains("BUILD FAILED")?:true) {
+            throw RuntimeException("Project build failed.")
+        }
     }
 
     private fun buildProject() {
