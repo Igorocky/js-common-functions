@@ -42,7 +42,7 @@ object Tools {
         log("clean")
         val result: Pair<String?, Matcher?>? = runCommand(
             "npm run clean",
-            compile(".*\\d+ passing \\(\\d+ms\\).*")
+            compile(".*Cleaning completed\\..*")
         )
         if (result == null || result.first?.contains("BUILD FAILED")?:true) {
             throw RuntimeException("Project build failed.")
