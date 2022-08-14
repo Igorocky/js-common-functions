@@ -1,6 +1,6 @@
 
 type point = {x: float, y: float}
-type vector = {b: point, e: point}
+type vector = {begin: point, end: point}
 type angle
 
 let ex: vector

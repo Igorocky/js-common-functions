@@ -11,8 +11,8 @@ let assertEqPnt = (p1:point,p2:point) => {
 }
 
 let assertEqVec = (v1:vector, v2:vector) => {
-    assertEqPnt(v1.b, v2.b)
-    assertEqPnt(v1.e, v2.e)
+    assertEqPnt(v1.begin, v2.begin)
+    assertEqPnt(v1.end, v2.end)
 }
 
 describe("Expln_2d", (.) => {
@@ -37,10 +37,10 @@ describe("Expln_2d", (.) => {
         assertEqPnt({x:1., y:7.}->pntTr(9., -3.), {x:10., y:4.})
 
         //let pntTrVec: (point, vector) => point
-        assertEqPnt({x:1., y:7.}->pntTrVec({b:{x:-3., y:7.}, e:{x:4., y:-1.}}), {x:8., y:-1.})
+        assertEqPnt({x:1., y:7.}->pntTrVec({begin:{x:-3., y:7.}, end:{x:4., y:-1.}}), {x:8., y:-1.})
 
         //let pntTrDir: (point, vector, float) => point
-        assertEqPnt({x:3., y:2.} -> pntTrDir({b:{x:100., y:-50.}, e:{x:104., y:-53.}}, 5.), {x:7., y:-1.})
+        assertEqPnt({x:3., y:2.} -> pntTrDir({begin:{x:100., y:-50.}, end:{x:104., y:-53.}}, 5.), {x:7., y:-1.})
 
         //let pntMult: (point, float) => point
         assertEqPnt({x:-6., y:9.} -> pntMult(2.), {x:-12., y:18.})
@@ -49,12 +49,12 @@ describe("Expln_2d", (.) => {
         assertEqPnt({x:-12., y:18.} -> pntDiv(2.), {x:-6., y:9.})
 
         //let pntVec: (point,point) => vector
-        assertEqVec({x:7., y:10.} -> pntVec({x:-7., y:100.}), {b:{x:7., y:10.}, e:{x:-7., y:100.}})
+        assertEqVec({x:7., y:10.} -> pntVec({x:-7., y:100.}), {begin:{x:7., y:10.}, end:{x:-7., y:100.}})
 
         //let pntRot: (point, angle) => point
         assertEqPnt({x:Js.Math.sqrt(3.) /. 2., y: 0.5} -> pntRot(deg(-150.)), {x:-0.5, y:-.Js.Math.sqrt(3.) /. 2.})
         
-       let testVec = {b:{x:3., y:4.}, e:{x:6., y:8.}} 
+       let testVec = {begin:{x:3., y:4.}, end:{x:6., y:8.}}
 
         //let vecLen: vector => float
         assertEq(testVec -> vecLen, 5.)
