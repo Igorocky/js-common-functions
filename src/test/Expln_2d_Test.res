@@ -17,6 +17,10 @@ let assertEqVec = (v1:vector, v2:vector) => {
 
 describe("Expln_2d", (.) => {
     it("test all", (.) => {
+        //let ex: vector
+        //let ey: vector
+        assertEqVec(ex->vecRot(rad(Js.Math._PI /. 2.)), ey)
+
         //let deg: float => angle
         //let rad: float => angle
         //let toDeg: angle => float
@@ -58,18 +62,47 @@ describe("Expln_2d", (.) => {
 
         //let vecLen: vector => float
         assertEq(testVec -> vecLen, 5.)
+
         //let vecRev: vector => vector
+        assertEqVec(testVec->vecRev, {begin:{x:3., y:4.}, end:{x:0., y:0.}})
+
         //let vecMult: (vector, float) => vector
+        assertEqVec(testVec->vecMult(3.), {begin:{x:9., y:12.}, end:{x:18., y:24.}})
+
         //let vecMultVec: (vector, vector) => float
+        assertEqNum(testVec->vecRot(deg(60.))->vecMultVec(testVec), 12.5)
+
         //let vecDiv: (vector, float) => vector
+        assertEqVec(testVec->vecDiv(2.), {begin:{x:1.5, y:2.}, end:{x:3., y:4.}})
+
         //let vecAdd: (vector, vector) => vector
+        assertEqVec(testVec->vecAdd({begin:{x:3., y:4.}, end:{x:6., y:8.}}), {begin:{x:6., y:8.}, end:{x:12., y:16.}})
+
         //let vecRot: (vector, angle) => vector
+        assertEqVec(testVec->vecRot(deg(-90.)), {begin:{x:3., y:4.}, end:{x:7., y:1.}})
+
         //let vecNorm: vector => vector
+        assertEqVec(testVec->vecNorm, {begin:{x:3. /. 5., y:4. /. 5.}, end:{x:6. /. 5., y:8. /. 5.}})
+
         //let vecSwapEnds: vector => vector
+        assertEqVec(testVec->vecSwapEnds, {begin:{x:6., y:8.}, end:{x:3., y:4.}})
+
         //let vecBeginAt: (vector, point) => vector
+        assertEqVec(testVec->vecBeginAt({x:100., y: -30.}), {begin:{x:100., y: -30.}, end:{x:103., y:-26.}})
+
         //let vecEndAt: (vector, point) => vector
+        assertEqVec(testVec->vecEndAt({x:100., y: -30.}), {begin:{x:97., y: -34.}, end:{x:100., y: -30.}})
+
         //let vecTr: (vector, float, float) => vector
+        assertEqVec(testVec->vecTr(-4., 9.), {begin:{x:-1., y:13.}, end:{x:2., y:17.}})
+
         //let vecTrVec: (vector, vector) => vector
+        assertEqVec(
+            testVec->vecTrVec({begin:{x:-7., y: 11.}, end:{x:23., y: -1.}}),
+            {begin:{x:33., y:-8.}, end:{x:36., y:-4.}}
+        )
+
         //let vecTrDir: (vector, vector, float) => vector
+        assertEqVec(testVec->vecTrDir(testVec, 5.), {begin:{x:6., y:8.}, end:{x:9., y:12.}})
     })
 })
