@@ -1,24 +1,24 @@
 open Expln_React_Mui
 
 type view = {
-  id: int,
+  id: string,
   title: string,
   render: unit => React.element,
 }
 
 let renderDefaultView = idOfNonExistentView =>
     <Paper>{ 
-      React.string("View not found: " ++ (idOfNonExistentView -> Belt.Int.toString)) 
+      React.string("View not found: " ++ idOfNonExistentView) 
     }</Paper>
 
 @react.component
-let make = (~allViews: array<view>) => {
-  let (selectedViewId, setSelectedViewId) = React.useState(_ => None)
+let make = (~allViews: array<view>, ~defaultViewId = ?) => {
+  let (selectedViewId, setSelectedViewId) = React.useState(_ => defaultViewId)
 
   let openView = view => setSelectedViewId(_ => Some(view.id))
 
   let renderViewListItem = view =>
-    <ListItem key={view.id -> Belt.Int.toString}>
+    <ListItem key={view.id}>
       <ListItemButton onClick={_ => openView(view)}> 
         <ListItemIcon>
           <Icons.BrightnessLow/>
