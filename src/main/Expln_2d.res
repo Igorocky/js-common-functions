@@ -7,6 +7,8 @@ let ey = {b:{x:0., y:0.}, e:{x:0., y:1.}}
 
 let deg: float => angle = d => d /. 180. *. Js.Math._PI
 let rad: float => angle = r => r
+let toDeg: angle => float = a => a /. Js.Math._PI *. 180.
+let toRad: angle => float = a => a
 
 
 let pntLen: point => float = p => Js.Math.sqrt(p.x *. p.x +. p.y *. p.y)

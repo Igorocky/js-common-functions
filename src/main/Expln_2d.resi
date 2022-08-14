@@ -8,6 +8,8 @@ let ey: vector
 
 let deg: float => angle
 let rad: float => angle
+let toDeg: angle => float
+let toRad: angle => float
 
 let pntLen: point => float
 let pntSub: (point,point) => point

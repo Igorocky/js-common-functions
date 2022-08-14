@@ -1,6 +1,6 @@
 let {log,log2} = module(Js.Console)
 let {parseObjOpt, parseObj, str} = module(Expln_utils_jsonParse)
-let {describe,it,assertEq,assertTrue,fail} = module(Expln_test)
+let {describe,it,assertEq,fail} = module(Expln_test)
 
 type param = {
     name: string,

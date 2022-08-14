@@ -3,15 +3,15 @@
 
 let {exn} = module(Expln_utils_common)
 
-let assertTrue = (actual:bool) => {
-    if (!actual) {
-        exn(`true was expected`)
+let assertEq = (actual:'a, expected:'a) => {
+    if (expected != actual) {
+        exn(`\n  actual: "${Js.String.make(actual)}"\nexpected: "${Js.String.make(expected)}"`)
     }
 }
 
-let assertEq = (expected:'a, actual:'a) => {
-    if (expected != actual) {
-        exn(`\nexpected: "${expected}"\n  actual: "${actual}"`)
+let assertEqNum = (actual: float, expected: float, precision: float) => {
+    if (actual <= expected -. precision || actual >= expected +. precision) {
+        exn(`\n  actual: "${Js.String.make(actual)}"\nexpected: "${Js.String.make(expected)}"`)
     }
 }
 
