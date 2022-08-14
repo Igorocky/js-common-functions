@@ -1,11 +1,11 @@
 @val external describe: (string, (. unit)=>unit) => unit = "describe"
 @val external it: (string, (. unit)=>unit) => unit = "it"
 
-let {exn} = module(Expln_utils_common)
+let {exn, stringify} = module(Expln_utils_common)
 
 let assertEq = (actual:'a, expected:'a) => {
     if (expected != actual) {
-        exn(`\n  actual: "${Js.String.make(actual)}"\nexpected: "${Js.String.make(expected)}"`)
+        exn(`\n  actual: "${stringify(actual)}"\nexpected: "${stringify(expected)}"`)
     }
 }
 

@@ -28,10 +28,17 @@ describe("Expln_2d", (.) => {
         assertEqNum({x:3., y:4.} -> pntLen, 5.)
 
         //let pntSub: (point,point) => point
+        assertEqPnt({x:1., y:7.}->pntSub({x:6.,y:-2.}), {x:-5., y:9.})
 
         //let pntAdd: (point,point) => point
+        assertEqPnt({x:1., y:7.}->pntAdd({x:6.,y:-2.}), {x:7., y:5.})
+
         //let pntTr: (point,float,float) => point
+        assertEqPnt({x:1., y:7.}->pntTr(9., -3.), {x:10., y:4.})
+
         //let pntTrVec: (point, vector) => point
+        assertEqPnt({x:1., y:7.}->pntTrVec({b:{x:-3., y:7.}, e:{x:4., y:-1.}}), {x:8., y:-1.})
+
         //let pntTrDir: (point, vector, float) => point
         //let pntMult: (point, float) => point
         //let pntDiv: (point, float) => point

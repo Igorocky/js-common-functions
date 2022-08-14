@@ -1,8 +1,11 @@
+open Expln_common_bindings
 let {log,log2} = module(Js.Console)
 let {objToTable, objToTableWithChildren} = module(Expln_utils_data)
 let {parseObj, arrOpt, num, str} = module(Expln_utils_jsonParse)
 let {id} = module(Expln_utils_common)
 let {describe,it,assertEq,fail} = module(Expln_test)
+
+let anyToJson = a => stringify(a) -> Js.Json.parseExn
 
 describe("objToTable", (.) => {
     it("should transform an object to a table", (.) => {
@@ -15,9 +18,14 @@ describe("objToTable", (.) => {
                 {"id":22222,"type":"cRR","sub":[{"sn":5},{"sn":6}]}
             ]
         }` -> parseObj(id)->Belt_Result.getExn
+        let expected = [
+            anyToJson({ "rootId": 1244, "rootName": "NAME--", "childId": 888, "type": "AA"}),
+            anyToJson({ "rootId": 1244, "rootName": "NAME--", "childId": 22222, "type": "cRR", "sn": 5}),
+            anyToJson({ "rootId": 1244, "rootName": "NAME--", "childId": 22222, "type": "cRR", "sn": 6}),
+        ]
 
         //when
-        let tbl = objToTable(
+        let actual = objToTable(
             jsonAny,
             [
                 {
@@ -44,6 +52,6 @@ describe("objToTable", (.) => {
         ) 
 
         //then
-        log(tbl)
+        assertEq( anyToJson(actual), anyToJson(expected))
     })
 })
