@@ -65,8 +65,8 @@ let bndFromPoints: array<point> => boundaries = ps => {
     }
     let minX = ref(ps[0].x)
     let minY = ref(ps[0].y)
-    let maxX = minX
-    let maxY = minY
+    let maxX = ref(minX.contents)
+    let maxY = ref(minY.contents)
     for i in 1 to arrSize(ps)-1 {
         let p = ps[i]
         minX := minF(minX.contents, p.x)
@@ -106,3 +106,9 @@ let bndMergeAll: array<boundaries> => boundaries = bs => {
         b.contents
     }
 }
+let bndMinX: boundaries => float = b => b.minX
+let bndMinY: boundaries => float = b => b.minY
+let bndMaxX: boundaries => float = b => b.maxX
+let bndMaxY: boundaries => float = b => b.maxY
+let bndIncludes: (boundaries, point) => bool = (b,p) =>
+    b.minX <= p.x && p.x < b.maxX && b.minY <= p.y && p.y < b.maxY

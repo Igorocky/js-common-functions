@@ -5,13 +5,13 @@ let {exn, stringify} = module(Expln_utils_common)
 
 let assertEq = (actual:'a, expected:'a) => {
     if (expected != actual) {
-        exn(`\nexpected: "${stringify(expected)}"\n  actual: "${stringify(actual)}"`)
+        exn(`\n  actual: "${stringify(actual)}"\nexpected: "${stringify(expected)}"`)
     }
 }
 
 let assertEqNum = (actual: float, expected: float, precision: float) => {
     if (actual <= expected -. precision || actual >= expected +. precision) {
-        exn(`\nexpected: "${Js.String.make(expected)}"\n  actual: "${Js.String.make(actual)}"`)
+        exn(`\n  actual: "${Js.String.make(actual)}"\nexpected: "${Js.String.make(expected)}"`)
     }
 }
 
