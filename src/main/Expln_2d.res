@@ -1,6 +1,9 @@
+open Expln_common_bindings
+
 type point = {x: float, y: float}
 type vector = {begin: point, end: point}
 type angle = float
+type boundaries = {minX: float, minY: float, maxX: float, maxY: float}
 
 let ex = {begin:{x:0., y:0.}, end:{x:1., y:0.}}
 let ey = {begin:{x:0., y:0.}, end:{x:0., y:-1.}}
@@ -55,3 +58,51 @@ let vecTrDir: (vector, vector, float) => vector = (v,dir,x) => v -> vecTrVec(dir
 
 let pntTrDir: (point, vector, float) => point = (p, dir, dist) => p -> pntTrVec(dir -> vecNorm -> vecMult(dist))
 let vecRev: vector => vector = vecRot(_, deg(180.))
+
+let bndFromPoints: array<point> => boundaries = ps => {
+    if (arrIsEmpty(ps)) {
+        exn("Cannot create boudaries from an empty array of points.")
+    }
+    let minX = ref(ps[0].x)
+    let minY = ref(ps[0].y)
+    let maxX = minX
+    let maxY = minY
+    for i in 1 to arrSize(ps)-1 {
+        let p = ps[i]
+        minX := minF(minX.contents, p.x)
+        minY := minF(minY.contents, p.y)
+        maxX := maxF(maxX.contents, p.x)
+        maxY := maxF(maxY.contents, p.y)
+    }
+    {minX:minX.contents, minY:minY.contents, maxX:maxX.contents, maxY:maxY.contents}
+}
+let bndAddPoint: (boundaries,point) => boundaries = (b,p) => {
+    minX:minF(b.minX,p.x),
+    minY:minF(b.minY,p.y),
+    maxX:maxF(b.maxX,p.x),
+    maxY:maxF(b.maxY,p.y),
+}
+let bndMerge: (boundaries,boundaries) => boundaries = (b1,b2) => {
+    minX:minF(b1.minX,b2.minX),
+    minY:minF(b1.minY,b2.minY),
+    maxX:maxF(b1.maxX,b2.maxX),
+    maxY:maxF(b1.maxY,b2.maxY),
+}
+let bndAddPoints: (boundaries,array<point>) => boundaries = (b,ps) => {
+    if (arrIsEmpty(ps)) {
+        b
+    } else {
+        b->bndMerge(bndFromPoints(ps))
+    }
+}
+let bndMergeAll: array<boundaries> => boundaries = bs => {
+    if (arrIsEmpty(bs)) {
+        exn("Cannot merge empty array of boundaries.")
+    } else {
+        let b = ref(bs[0])
+        for i in 1 to arrSize(bs)-1 {
+            b := b.contents->bndMerge(bs[i])
+        }
+        b.contents
+    }
+}

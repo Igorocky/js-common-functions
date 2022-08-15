@@ -2,6 +2,7 @@
 type point
 type vector
 type angle
+type boundaries
 
 let ex: vector
 let ey: vector
@@ -40,3 +41,9 @@ let vecEndAt: (vector, point) => vector
 //let vecTr: (vector, float, float) => vector
 let vecTrVec: (vector, vector) => vector
 let vecTrDir: (vector, vector, float) => vector
+
+let bndFromPoints: array<point> => boundaries
+let bndAddPoint: (boundaries,point) => boundaries
+let bndAddPoints: (boundaries,array<point>) => boundaries
+let bndMerge: (boundaries,boundaries) => boundaries
+let bndMergeAll: array<boundaries> => boundaries
