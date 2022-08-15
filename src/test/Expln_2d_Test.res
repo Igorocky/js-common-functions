@@ -240,6 +240,11 @@ describe("boundaries", (.) => {
         assertEq(b->bndIncludes(mkp({x:-14., y:110.})), true)
         assertEq(b->bndIncludes(mkp({x:4., y:11.})), false)
         assertEq(b->bndIncludes(mkp({x:3.999, y:10.999})), true)
-        
+
+        //let bndWidth: boundaries => float
+        //let bndHeight: boundaries => float
+        let b = bndFromPoints([mkp({x:4., y:-11.}), mkp({x:-14., y:110.})])
+        assertEq(b->bndWidth, 18.)
+        assertEq(b->bndHeight, 121.)
     })
 })

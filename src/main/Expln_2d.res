@@ -112,3 +112,5 @@ let bndMaxX: boundaries => float = b => b.maxX
 let bndMaxY: boundaries => float = b => b.maxY
 let bndIncludes: (boundaries, point) => bool = (b,p) =>
     b.minX <= p.x && p.x < b.maxX && b.minY <= p.y && p.y < b.maxY
+let bndWidth: boundaries => float = b => b.maxX -. b.minX
+let bndHeight: boundaries => float = b => b.maxY -. b.minY

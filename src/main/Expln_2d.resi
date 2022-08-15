@@ -52,3 +52,5 @@ let bndMinY: boundaries => float
 let bndMaxX: boundaries => float
 let bndMaxY: boundaries => float
 let bndIncludes: (boundaries, point) => bool
+let bndWidth: boundaries => float
+let bndHeight: boundaries => float
