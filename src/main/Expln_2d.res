@@ -3,7 +3,7 @@ type vector = {begin: point, end: point}
 type angle = float
 
 let ex = {begin:{x:0., y:0.}, end:{x:1., y:0.}}
-let ey = {begin:{x:0., y:0.}, end:{x:0., y:1.}}
+let ey = {begin:{x:0., y:0.}, end:{x:0., y:-1.}}
 
 let deg: float => angle = d => d /. 180. *. Js.Math._PI
 let rad: float => angle = r => r
@@ -21,8 +21,8 @@ let pntMult: (point, float) => point = (p, x) => {x: p.x *. x, y: p.y *. x}
 let pntDiv: (point, float) => point = (p, x) => {x: p.x /. x, y: p.y /. x}
 let pntVec: (point,point) => vector = (b,e) => {begin:b, end:e}
 let pntRot: (point, angle) => point = (p,a) => {
-    x: p.x *. Js.Math.cos(a) -. p.y *. Js.Math.sin(a),
-    y: p.x *. Js.Math.sin(a) +. p.y *. Js.Math.cos(a),
+    x: p.x *. Js.Math.cos(-.a) -. p.y *. Js.Math.sin(-.a),
+    y: p.x *. Js.Math.sin(-.a) +. p.y *. Js.Math.cos(-.a),
 }
 
 
