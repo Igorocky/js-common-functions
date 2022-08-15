@@ -55,12 +55,9 @@ describe("Expln_2d", (.) => {
         //let pntAdd: (point,point) => point
         assertEqPnt({x:1., y:7.}->mkp->pntAdd({x:6.,y:-2.}->mkp), {x:7., y:5.}->mkp)
 
-        //let pntTr: (point,float,float) => point
-        //assertEqPnt({x:1., y:7.}->mkp->pntTr(9., -3.), {x:10., y:4.}->mkp)
-
-        //let pntTrVec: (point, vector) => point
+        //let pntTr: (point, vector) => point
         assertEqPnt(
-            {x:1., y:7.}->mkp->pntTrVec({begin:{x:-3., y:7.}, end:{x:4., y:-1.}}->mkv),
+            {x:1., y:7.}->mkp->pntTr({begin:{x:-3., y:7.}, end:{x:4., y:-1.}}->mkv),
             {x:8., y:-1.}->mkp
         )
 
@@ -129,12 +126,9 @@ describe("Expln_2d", (.) => {
         //let vecEndAt: (vector, point) => vector
         assertEqVec(testVec->vecEndAt({x:100., y: -30.}->mkp), {begin:{x:97., y: -34.}, end:{x:100., y: -30.}}->mkv)
 
-        //let vecTr: (vector, float, float) => vector
-        //assertEqVec(testVec->vecTr(-4., 9.), {begin:{x:-1., y:13.}, end:{x:2., y:17.}}->mkv)
-
-        //let vecTrVec: (vector, vector) => vector
+        //let vecTr: (vector, vector) => vector
         assertEqVec(
-            testVec->vecTrVec({begin:{x:-7., y: 11.}, end:{x:23., y: -1.}}->mkv),
+            testVec->vecTr({begin:{x:-7., y: 11.}, end:{x:23., y: -1.}}->mkv),
             {begin:{x:33., y:-8.}, end:{x:36., y:-4.}}->mkv
         )
 
