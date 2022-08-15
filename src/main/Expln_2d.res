@@ -10,7 +10,8 @@ let rad: float => angle = r => r
 let toDeg: angle => float = a => a /. Js.Math._PI *. 180.
 let toRad: angle => float = a => a
 
-
+let pntX: point => float = p => p.x
+let pntY: point => float = p => p.y
 let pntLen: point => float = p => Js.Math.sqrt(p.x *. p.x +. p.y *. p.y)
 let pntSub: (point,point) => point = (a,b) => {x: a.x -. b.x, y: a.y -. b.y}
 let pntAdd: (point,point) => point = (a,b) => {x: a.x +. b.x, y: a.y +. b.y}
@@ -25,6 +26,8 @@ let pntRot: (point, angle) => point = (p,a) => {
 }
 
 
+let vecBegin: vector => point = v => v.begin
+let vecEnd: vector => point = v => v.end
 let vecLen: vector => float = v => v.end -> pntSub(v.begin) -> pntLen
 let vecMult: (vector, float) => vector = (v,x) => {begin: v.begin -> pntMult(x), end: v.end -> pntMult(x)}
 let vecMultVec: (vector, vector) => float = (v1, v2) => {

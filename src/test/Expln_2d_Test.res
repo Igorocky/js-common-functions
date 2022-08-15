@@ -1,19 +1,37 @@
 let {describe, it, assertEq, assertEqNum} = module(Expln_test)
 open Expln_2d
 
+type pnt = {x: float, y: float}
+let mkp = p => ex->vecMult(p.x)->vecAdd(ey->vecMult(p.y))->vecEnd
+type vec = {begin:pnt, end:pnt}
+let mkv = v => pntVec(v.begin->mkp, v.end->mkp)
+
 let precision = 0.000001
 
 let assertEqNum = (a, b) => assertEqNum(a, b, precision)
 
 let assertEqPnt = (p1:point,p2:point) => {
-    assertEqNum(p1.x, p2.x)
-    assertEqNum(p1.y, p2.y)
+    assertEqNum(p1->pntX, p2->pntX)
+    assertEqNum(p1->pntY, p2->pntY)
 }
 
 let assertEqVec = (v1:vector, v2:vector) => {
-    assertEqPnt(v1.begin, v2.begin)
-    assertEqPnt(v1.end, v2.end)
+    assertEqPnt(v1->vecBegin, v2->vecBegin)
+    assertEqPnt(v1->vecEnd, v2->vecEnd)
 }
+
+describe("utility test functions", (.) => {
+    it("work", (.) => {
+        let p = {x:39.62, y:-71.03}->mkp
+        assertEqNum(p->pntX, 39.62)
+        assertEqNum(p->pntY, -71.03)
+        let v = {begin:{x:-7., y: 11.}, end:{x:23., y: -1.}}->mkv
+        assertEqNum(v->vecBegin->pntX, -7.)
+        assertEqNum(v->vecBegin->pntY, 11.)
+        assertEqNum(v->vecEnd->pntX, 23.)
+        assertEqNum(v->vecEnd->pntY, -1.)
+    })
+})
 
 describe("Expln_2d", (.) => {
     it("test all", (.) => {
@@ -29,80 +47,98 @@ describe("Expln_2d", (.) => {
         assertEqNum(rad(2.14675) -> toDeg, 122.9997147)
         
         //let pntLen: point => float
-        assertEqNum({x:3., y:4.} -> pntLen, 5.)
+        assertEqNum({x:3., y:4.}->mkp -> pntLen, 5.)
 
         //let pntSub: (point,point) => point
-        assertEqPnt({x:1., y:7.}->pntSub({x:6.,y:-2.}), {x:-5., y:9.})
+        assertEqPnt({x:1., y:7.}->mkp->pntSub({x:6.,y:-2.}->mkp), {x:-5., y:9.}->mkp)
 
         //let pntAdd: (point,point) => point
-        assertEqPnt({x:1., y:7.}->pntAdd({x:6.,y:-2.}), {x:7., y:5.})
+        assertEqPnt({x:1., y:7.}->mkp->pntAdd({x:6.,y:-2.}->mkp), {x:7., y:5.}->mkp)
 
         //let pntTr: (point,float,float) => point
-        assertEqPnt({x:1., y:7.}->pntTr(9., -3.), {x:10., y:4.})
+        assertEqPnt({x:1., y:7.}->mkp->pntTr(9., -3.), {x:10., y:4.}->mkp)
 
         //let pntTrVec: (point, vector) => point
-        assertEqPnt({x:1., y:7.}->pntTrVec({begin:{x:-3., y:7.}, end:{x:4., y:-1.}}), {x:8., y:-1.})
+        assertEqPnt(
+            {x:1., y:7.}->mkp->pntTrVec({begin:{x:-3., y:7.}, end:{x:4., y:-1.}}->mkv),
+            {x:8., y:-1.}->mkp
+        )
 
         //let pntTrDir: (point, vector, float) => point
-        assertEqPnt({x:3., y:2.} -> pntTrDir({begin:{x:100., y:-50.}, end:{x:104., y:-53.}}, 5.), {x:7., y:-1.})
+        assertEqPnt(
+            {x:3., y:2.}->mkp -> pntTrDir({begin:{x:100., y:-50.}, end:{x:104., y:-53.}}->mkv, 5.),
+            {x:7., y:-1.}->mkp
+        )
 
         //let pntMult: (point, float) => point
-        assertEqPnt({x:-6., y:9.} -> pntMult(2.), {x:-12., y:18.})
+        assertEqPnt({x:-6., y:9.}->mkp -> pntMult(2.), {x:-12., y:18.}->mkp)
 
         //let pntDiv: (point, float) => point
-        assertEqPnt({x:-12., y:18.} -> pntDiv(2.), {x:-6., y:9.})
+        assertEqPnt({x:-12., y:18.}->mkp -> pntDiv(2.), {x:-6., y:9.}->mkp)
 
         //let pntVec: (point,point) => vector
-        assertEqVec({x:7., y:10.} -> pntVec({x:-7., y:100.}), {begin:{x:7., y:10.}, end:{x:-7., y:100.}})
+        assertEqVec(
+            {x:7., y:10.}->mkp -> pntVec({x:-7., y:100.}->mkp),
+            {begin:{x:7., y:10.}, end:{x:-7., y:100.}}->mkv
+        )
 
         //let pntRot: (point, angle) => point
-        assertEqPnt({x:Js.Math.sqrt(3.) /. 2., y: 0.5} -> pntRot(deg(-150.)), {x:-0.5, y:-.Js.Math.sqrt(3.) /. 2.})
+        assertEqPnt(
+            {x:Js.Math.sqrt(3.) /. 2., y: 0.5}->mkp -> pntRot(deg(-150.)),
+            {x:-0.5, y:-.Js.Math.sqrt(3.) /. 2.}->mkp
+        )
         
-       let testVec = {begin:{x:3., y:4.}, end:{x:6., y:8.}}
+       let testVec = {begin:{x:3., y:4.}, end:{x:6., y:8.}}->mkv
 
         //let vecLen: vector => float
         assertEq(testVec -> vecLen, 5.)
 
         //let vecRev: vector => vector
-        assertEqVec(testVec->vecRev, {begin:{x:3., y:4.}, end:{x:0., y:0.}})
+        assertEqVec(testVec->vecRev, {begin:{x:3., y:4.}, end:{x:0., y:0.}}->mkv)
 
         //let vecMult: (vector, float) => vector
-        assertEqVec(testVec->vecMult(3.), {begin:{x:9., y:12.}, end:{x:18., y:24.}})
+        assertEqVec(testVec->vecMult(3.), {begin:{x:9., y:12.}, end:{x:18., y:24.}}->mkv)
 
         //let vecMultVec: (vector, vector) => float
         assertEqNum(testVec->vecRot(deg(60.))->vecMultVec(testVec), 12.5)
 
         //let vecDiv: (vector, float) => vector
-        assertEqVec(testVec->vecDiv(2.), {begin:{x:1.5, y:2.}, end:{x:3., y:4.}})
+        assertEqVec(testVec->vecDiv(2.), {begin:{x:1.5, y:2.}, end:{x:3., y:4.}}->mkv)
 
         //let vecAdd: (vector, vector) => vector
-        assertEqVec(testVec->vecAdd({begin:{x:3., y:4.}, end:{x:6., y:8.}}), {begin:{x:6., y:8.}, end:{x:12., y:16.}})
+        assertEqVec(
+            testVec->vecAdd({begin:{x:3., y:4.}, end:{x:6., y:8.}}->mkv),
+            {begin:{x:6., y:8.}, end:{x:12., y:16.}}->mkv
+        )
 
         //let vecRot: (vector, angle) => vector
-        assertEqVec(testVec->vecRot(deg(-90.)), {begin:{x:3., y:4.}, end:{x:7., y:1.}})
+        assertEqVec(testVec->vecRot(deg(-90.)), {begin:{x:3., y:4.}, end:{x:7., y:1.}}->mkv)
 
         //let vecNorm: vector => vector
-        assertEqVec(testVec->vecNorm, {begin:{x:3. /. 5., y:4. /. 5.}, end:{x:6. /. 5., y:8. /. 5.}})
+        assertEqVec(testVec->vecNorm, {begin:{x:3. /. 5., y:4. /. 5.}, end:{x:6. /. 5., y:8. /. 5.}}->mkv)
 
         //let vecSwapEnds: vector => vector
-        assertEqVec(testVec->vecSwapEnds, {begin:{x:6., y:8.}, end:{x:3., y:4.}})
+        assertEqVec(testVec->vecSwapEnds, {begin:{x:6., y:8.}, end:{x:3., y:4.}}->mkv)
 
         //let vecBeginAt: (vector, point) => vector
-        assertEqVec(testVec->vecBeginAt({x:100., y: -30.}), {begin:{x:100., y: -30.}, end:{x:103., y:-26.}})
+        assertEqVec(
+            testVec->vecBeginAt({x:100., y: -30.}->mkp),
+            {begin:{x:100., y: -30.}, end:{x:103., y:-26.}}->mkv
+        )
 
         //let vecEndAt: (vector, point) => vector
-        assertEqVec(testVec->vecEndAt({x:100., y: -30.}), {begin:{x:97., y: -34.}, end:{x:100., y: -30.}})
+        assertEqVec(testVec->vecEndAt({x:100., y: -30.}->mkp), {begin:{x:97., y: -34.}, end:{x:100., y: -30.}}->mkv)
 
         //let vecTr: (vector, float, float) => vector
-        assertEqVec(testVec->vecTr(-4., 9.), {begin:{x:-1., y:13.}, end:{x:2., y:17.}})
+        assertEqVec(testVec->vecTr(-4., 9.), {begin:{x:-1., y:13.}, end:{x:2., y:17.}}->mkv)
 
         //let vecTrVec: (vector, vector) => vector
         assertEqVec(
-            testVec->vecTrVec({begin:{x:-7., y: 11.}, end:{x:23., y: -1.}}),
-            {begin:{x:33., y:-8.}, end:{x:36., y:-4.}}
+            testVec->vecTrVec({begin:{x:-7., y: 11.}, end:{x:23., y: -1.}}->mkv),
+            {begin:{x:33., y:-8.}, end:{x:36., y:-4.}}->mkv
         )
 
         //let vecTrDir: (vector, vector, float) => vector
-        assertEqVec(testVec->vecTrDir(testVec, 5.), {begin:{x:6., y:8.}, end:{x:9., y:12.}})
+        assertEqVec(testVec->vecTrDir(testVec, 5.), {begin:{x:6., y:8.}, end:{x:9., y:12.}}->mkv)
     })
 })

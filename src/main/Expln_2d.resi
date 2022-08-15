@@ -1,6 +1,6 @@
 
-type point = {x: float, y: float}
-type vector = {begin: point, end: point}
+type point
+type vector
 type angle
 
 let ex: vector
@@ -11,6 +11,8 @@ let rad: float => angle
 let toDeg: angle => float
 let toRad: angle => float
 
+let pntX: point => float
+let pntY: point => float
 let pntLen: point => float
 let pntSub: (point,point) => point
 let pntAdd: (point,point) => point
@@ -22,7 +24,8 @@ let pntDiv: (point, float) => point
 let pntVec: (point,point) => vector
 let pntRot: (point, angle) => point
 
-
+let vecBegin: vector => point
+let vecEnd: vector => point
 let vecLen: vector => float
 let vecRev: vector => vector
 let vecMult: (vector, float) => vector
