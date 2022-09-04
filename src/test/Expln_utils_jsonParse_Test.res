@@ -13,21 +13,44 @@ describe("Expln_utils_json.parseObj", (.) => {
         //given
         let jsonStr = `{
             "name": "AAA",
-            "value": "BBB"
+            "value": "BBB",
+            "num": 123.4,
+            "numOpt": null,
+            "int": 78,
+            "boolFalse": false,
+            "boolTrue": true,
+            "boolOpt": null
         }`
 
         //when
         let p = parseObj(jsonStr, d => {
-            name: d->str("name"),
-            value: d->str("value"),
+            "name": d->str("name"),
+            "value": d->str("value"),
+            "num": d->num("num"),
+            "numOpt": d->numOpt("numOpt"),
+            "int": d->int("int"),
+            "intOpt": d->intOpt("intOpt"),
+            "boolFalse": d->bool("boolFalse"),
+            "boolTrue": d->bool("boolTrue"),
+            "boolOpt": d->boolOpt("boolOpt"),
         })
 
         //then
         switch p {
             | Ok(param) =>
-                assertEq("AAA", param.name)
-                assertEq("BBB", param.value)
-            | _ => fail()
+                assertEq("AAA", param["name"])
+                assertEq("BBB", param["value"])
+                assertEq(123.4, param["num"])
+                assertEq(None, param["numOpt"])
+                assertEq(78, param["int"])
+                assertEq(None, param["intOpt"])
+                assertEq(false, param["boolFalse"])
+                assertEq(true, param["boolTrue"])
+                assertEq(None, param["boolOpt"])
+            | Error(msg) => {
+                log2("Error: ", msg)
+                fail()
+            }
         }
     })
     it("returns a meaningful message when null is passed", (.) => {
@@ -184,5 +207,64 @@ describe("Expln_utils_json.asNum", (.) => {
     })
 })
 
+describe("Expln_utils_json.asIntOpt", (.) => {
+    it("should return None when null is passed", (.) => {
+        //given
+        let jsonStr = `{"arr":[23.8,null,41]}`
+
+        //when
+        let p = parseObj(jsonStr, d => {
+            "arr": d->arr("arr", asIntOpt),
+        })->Belt_Result.getExn
+
+        //then
+        assertEq(p, {"arr":[Some(23),None,Some(41)]})
+    })
+})
+
+describe("Expln_utils_json.asInt", (.) => {
+    it("should return an error when null is passed", (.) => {
+        //given
+        let jsonStr = `{"arr":[23.8,null,41]}`
+
+        //when
+        let p = parseObj(jsonStr, d => {
+            "arr": d->arr("arr", asInt),
+        })
+
+        //then
+        assertEq(p, Error("Parse error: a number was expected at '/arr/1'."))
+    })
+})
+
+describe("Expln_utils_json.asBoolOpt", (.) => {
+    it("should return None when null is passed", (.) => {
+        //given
+        let jsonStr = `{"arr":[true,null,false]}`
+
+        //when
+        let p = parseObj(jsonStr, d => {
+            "arr": d->arr("arr", asBoolOpt),
+        })->Belt_Result.getExn
+
+        //then
+        assertEq(p, {"arr":[Some(true),None,Some(false)]})
+    })
+})
+
+describe("Expln_utils_json.asBool", (.) => {
+    it("should return an error when null is passed", (.) => {
+        //given
+        let jsonStr = `{"arr":[true,null,false]}`
+
+        //when
+        let p = parseObj(jsonStr, d => {
+            "arr": d->arr("arr", asBool),
+        })
+
+        //then
+        assertEq(p, Error("Parse error: a boolean was expected at '/arr/1'."))
+    })
+})
 
 Expln_utils_jsonParse.runTests___()
