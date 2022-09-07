@@ -1,3 +1,5 @@
+open Expln_React_common
+
 let style = ReactDOM.Style.make
 
 module TextField = {
@@ -23,7 +25,7 @@ module Button = {
   external make: (~onClick: ReactEvent.Mouse.t=>unit=?, ~variant:variant=?, ~children: React.element) => React.element = "default"
 }
 let button = (~text, ~variant, ~onClick=?, ()) => 
-  <Button variant onClick=?onClick>{React.string(text)}</Button>
+  <Button variant onClick=?onClick>{reStr(text)}</Button>
 
 module Paper = {
   @module("@mui/material/Paper") @react.component
@@ -78,7 +80,7 @@ let createContainer = (
   children:array<React.element>,
 ) =>
   <Grid container=true direction style=?style>
-    {React.array(children->Belt.Array.map(React.Children.map(_, c=><Grid item=true style=?childStyle>c</Grid>)))}
+    {reArr(children->Belt.Array.map(React.Children.map(_, c=><Grid item=true style=?childStyle>c</Grid>)))}
   </Grid>
 
 let column = createContainer(~direction=#column)
