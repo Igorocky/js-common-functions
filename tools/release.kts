@@ -39,6 +39,7 @@ object Tools {
             --------------------------------
             npm login
             npm publish --access public
+            [increase version]
             --------------------------------
         """.trimIndent())
 
