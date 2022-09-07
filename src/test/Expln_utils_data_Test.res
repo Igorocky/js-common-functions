@@ -1,11 +1,11 @@
-open Expln_common_bindings
+open Expln_utils_common
 let {log,log2} = module(Js.Console)
 let {objToTable, objToTableWithChildren} = module(Expln_utils_data)
 let {parseObj, arrOpt, num, str} = module(Expln_utils_jsonParse)
-let {id} = module(Expln_utils_common)
 let {describe,it,assertEq,fail} = module(Expln_test)
 
 let anyToJson = a => stringify(a) -> Js.Json.parseExn
+let id = x=>x
 
 describe("objToTable", (.) => {
     it("should transform an object to a table", (.) => {

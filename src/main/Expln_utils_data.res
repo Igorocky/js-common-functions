@@ -1,4 +1,4 @@
-open Expln_common_bindings
+open Expln_utils_common
 
 let {log,log2} = module(Js.Console)
 
@@ -21,7 +21,7 @@ let select: (array<'a>, array<selectExpr<'a,'b>>) => array<Js_dict.t<'b>> =
     (objects,selectors) => {
         objects->arrMap( o=>
                         selectors->arrMap(applySingleSelect(o,_))
-            ->arrRed(Js.Dict.empty(),mergeRows)
+            ->arrReduce(Js.Dict.empty(),mergeRows)
 
         )
     }

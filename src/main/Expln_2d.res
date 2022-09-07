@@ -1,4 +1,4 @@
-open Expln_common_bindings
+open Expln_utils_common
 
 type point = {x: float, y: float}
 type vector = {begin: point, end: point}
