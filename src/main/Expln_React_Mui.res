@@ -12,7 +12,7 @@ module TextField = {
     ~multiline:bool=?,
     ~maxRows:int=?,
     ~rows:int=?,
-    ~onChange:ReactEvent.Form.t=>unit=?,
+    ~onChange:reFormHnd=?,
   ) => React.element = "default"
 }
 let textField = ( ~key=?, ~value=?, ~label=?, ~size=?, ~multiline=?, ~maxRows=?, ~rows=?, ~onChange=?, ()) => 
@@ -22,7 +22,7 @@ let textField = ( ~key=?, ~value=?, ~label=?, ~size=?, ~multiline=?, ~maxRows=?,
 module Button = {
   type variant = [#text|#contained|#outlined]
   @module("@mui/material/Button") @react.component
-  external make: (~onClick: ReactEvent.Mouse.t=>unit=?, ~variant:variant=?, ~children: React.element) => React.element = "default"
+  external make: (~onClick: reMouseHnd=?, ~variant:variant=?, ~children: React.element) => React.element = "default"
 }
 let button = (~text, ~variant, ~onClick=?, ()) => 
   <Button variant onClick=?onClick>{reStr(text)}</Button>
