@@ -1,4 +1,7 @@
+type reCmp<'a> = React.component<'a>
 type reElem = React.element
+type reStyle = ReactDOM.Style.t
+
 type reClipboardHnd = ReactEvent.Clipboard.t=>unit
 type reCompositionHnd = ReactEvent.Composition.t=>unit
 type reKeyboardHnd = ReactEvent.Keyboard.t=>unit
@@ -15,6 +18,8 @@ type reImageHnd = ReactEvent.Image.t=>unit
 type reAnimationHnd = ReactEvent.Animation.t=>unit
 type reTransitionHnd = ReactEvent.Transition.t=>unit
 
-let reNull = React.null
-let reArr = React.array
-let reStr = React.string
+let evt2Str = strConsumer => e => strConsumer(ReactEvent.Form.target(e)["value"])
+let evt2Bool = boolConsumer => e => boolConsumer(ReactEvent.Form.target(e)["checked"])
+
+@module("react")
+external useState: 'a => ('a, 'a => unit) = "useState"

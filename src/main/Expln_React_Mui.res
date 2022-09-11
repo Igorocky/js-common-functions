@@ -1,36 +1,14 @@
 open Expln_React_common
 
-let style = ReactDOM.Style.make
+module TextField = Expln_React_TextField
+module Grid = Expln_React_Grid
+module Col = Expln_React_Column
+module Row = Expln_React_Row
+module Paper = Expln_React_Paper
+module Button = Expln_React_Button
+module Checkbox = Expln_React_Checkbox
 
-module TextField = {
-  type size = [#medium | #small]
-  @module("@mui/material/TextField") @react.component
-  external make: (
-    ~value: string=?,
-    ~label:string=?,
-    ~size:size=?, 
-    ~multiline:bool=?,
-    ~maxRows:int=?,
-    ~rows:int=?,
-    ~onChange:reFormHnd=?,
-  ) => React.element = "default"
-}
-let textField = ( ~key=?, ~value=?, ~label=?, ~size=?, ~multiline=?, ~maxRows=?, ~rows=?, ~onChange=?, ()) => 
-  <TextField key=?key value=?value label=?label size=?size multiline=?multiline maxRows=?maxRows rows=?rows 
-    onChange=?onChange />
 
-module Button = {
-  type variant = [#text|#contained|#outlined]
-  @module("@mui/material/Button") @react.component
-  external make: (~onClick: reMouseHnd=?, ~variant:variant=?, ~children: React.element) => React.element = "default"
-}
-let button = (~text, ~variant, ~onClick=?, ()) => 
-  <Button variant onClick=?onClick>{reStr(text)}</Button>
-
-module Paper = {
-  @module("@mui/material/Paper") @react.component
-  external make: (~children: React.element) => React.element = "default"
-}
 
 module List = {
   @module("@mui/material/List") @react.component
@@ -57,36 +35,6 @@ module ListItemIcon = {
   external make: (~children: React.element) => React.element = "default"
 }
 
-module Grid = {
-  type direction = [#column|#row]
-  type justifyContent = [#"flex-start"|#"flex-end"]
-  type alignItems = [#"flex-start"|#"flex-end"]
-  @module("@mui/material/Grid") @react.component
-  external make: (
-    ~container:bool=?, 
-    ~item:bool=?, 
-    ~direction:direction=?,
-    ~justifyContent:justifyContent=?,
-    ~alignItems:alignItems=?,
-    ~style:ReactDOM.Style.t=?, 
-    ~children: React.element
-  ) => React.element = "default"
-}
-
-let createContainer = (
-  ~direction:Grid.direction,
-  ~style:option<ReactDOM.Style.t>=?, 
-  ~childStyle:option<ReactDOM.Style.t>=?, 
-  children:array<React.element>,
-) =>
-  <Grid container=true direction style=?style>
-    {reArr(children->Belt.Array.map(React.Children.map(_, c=><Grid item=true style=?childStyle>c</Grid>)))}
-  </Grid>
-
-let column = createContainer(~direction=#column)
-let row = createContainer(~direction=#row)
-
-
 module Icons = {
 
   module Delete = {
@@ -98,4 +46,29 @@ module Icons = {
     @module("@mui/icons-material/BrightnessLow") @react.component
     external make: () => React.element = "default"
   }
+}
+
+module RE = {
+
+  let textField = ( ~key=?, ~value=?, ~label=?, ~size=?, ~multiline=?, ~maxRows=?, ~rows=?, ~onChange=?, ()) => 
+    <TextField key=?key value=?value label=?label size=?size multiline=?multiline maxRows=?maxRows rows=?rows onChange=?onChange />
+
+
+  @module("@mui/material/TextField")
+  external textField2Cmp: reCmp<'a> = "default"
+  let textField2 = (~value:option<string>=?, ()) => React.createElement(textField2Cmp, {
+    "value":value
+  })
+  
+  @module("@mui/material/Paper")
+  external paperCmp: reCmp<'a> = "default"
+  let paper = (children:array<reElem>) => React.createElement(paperCmp, {"children":children})
+
+  @module("react")
+  external re: (reCmp<'a>, {..}) => reElem = "createElement"
+  @module("react")
+  external reDom: (string, {..}) => reElem = "createElement"
+
+  let paper2 = (children:array<reElem>) => re(paperCmp, {"children":children})
+  let div = (children:array<reElem>) => reDom("div", {"children":children})
 }

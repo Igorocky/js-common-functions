@@ -16,6 +16,9 @@
 	// 	"description": "Log output to console"
 	// }
 
+	"React.null": { "scope": "", "prefix": "null", "body": [
+			"React.null"
+    ] },
 	"React.string": { "scope": "", "prefix": "str", "body": [
 			"React.string($0)"
     ] },
