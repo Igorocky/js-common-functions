@@ -1,9 +1,6 @@
 open Expln_React_common
 
-type size = 
-    | Medium
-    | Small
-    | String(string)
+type size = [ #medium | #small ]
 
 @module("@mui/material/TextField") @react.component
 external make: (

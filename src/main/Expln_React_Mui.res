@@ -7,6 +7,10 @@ module Row = Expln_React_Row
 module Paper = Expln_React_Paper
 module Button = Expln_React_Button
 module Checkbox = Expln_React_Checkbox
+module FormControl = Expln_React_FormControl
+module InputLabel = Expln_React_InputLabel
+module Select = Expln_React_Select
+module MenuItem = Expln_React_MenuItem
 
 
 
