@@ -13,4 +13,5 @@ external make: (
     ~onChange:reFormHnd=?,
     ~inputProps:{..}=?,
     ~disabled:bool=?,
+    ~autoFocus:bool=?,
 ) => reElem = "default"
