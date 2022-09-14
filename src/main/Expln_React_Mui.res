@@ -12,33 +12,11 @@ module Select = Expln_React_Select
 module MenuItem = Expln_React_MenuItem
 module InputAdornment = Expln_React_InputAdornment
 module IconButton = Expln_React_IconButton
-
-
-
-module List = {
-  @module("@mui/material/List") @react.component
-  external make: (~children: React.element) => React.element = "default"
-}
-
-module ListItem = {
-  @module("@mui/material/ListItem") @react.component
-  external make: (~children: React.element) => React.element = "default"
-}
-
-module ListItemButton = {
-  @module("@mui/material/ListItemButton") @react.component
-  external make: (~onClick: _ => () =?, ~children: React.element) => React.element = "default"
-}
-
-module ListItemText = {
-  @module("@mui/material/ListItemText") @react.component
-  external make: (~children: React.element) => React.element = "default"
-}
-
-module ListItemIcon = {
-  @module("@mui/material/ListItemIcon") @react.component
-  external make: (~children: React.element) => React.element = "default"
-}
+module List = Expln_React_List
+module ListItem = Expln_React_ListItem
+module ListItemButton = Expln_React_ListItemButton
+module ListItemText = Expln_React_ListItemText
+module ListItemIcon = Expln_React_ListItemIcon
 
 module Icons = {
 
