@@ -8,6 +8,7 @@ external make: (
     ~label:string=?,
     ~size:size=?, 
     ~multiline:bool=?,
+    ~minRows:int=?,
     ~maxRows:int=?,
     ~rows:int=?,
     ~onChange:reFormHnd=?,

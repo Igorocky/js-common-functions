@@ -17,6 +17,9 @@ module ListItem = Expln_React_ListItem
 module ListItemButton = Expln_React_ListItemButton
 module ListItemText = Expln_React_ListItemText
 module ListItemIcon = Expln_React_ListItemIcon
+module Slider = Expln_React_Slider
+module Input = Expln_React_Input
+module Box = Expln_React_Box
 
 module Icons = {
 
