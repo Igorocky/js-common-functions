@@ -27,7 +27,7 @@ module Icons = {
     @module("@mui/icons-material/Delete") @react.component
     external make: () => React.element = "default"
   }
-  
+
   module Clear = {
     @module("@mui/icons-material/Clear") @react.component
     external make: () => React.element = "default"
