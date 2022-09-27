@@ -21,6 +21,8 @@ module Slider = Expln_React_Slider
 module Input = Expln_React_Input
 module Box = Expln_React_Box
 
+module TextFileReader = Expln_React_TextFileReader
+
 module Icons = {
 
   module Delete = {
