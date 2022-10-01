@@ -17,3 +17,4 @@ let assertEqNum = (actual: float, expected: float, precision: float) => {
 
 
 let fail = () => exn("Test failed.")
+let failWithMsg = str => exn("Test failed: " ++ str)

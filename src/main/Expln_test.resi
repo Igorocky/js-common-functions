@@ -5,3 +5,4 @@ let assertEq: ('a, 'a) => unit
 let assertEqNum: (float, float, float) => unit
 
 let fail: () => unit
+let failWithMsg: string => unit
