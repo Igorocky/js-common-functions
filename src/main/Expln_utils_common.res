@@ -12,6 +12,8 @@ let ints = Belt_Array.range
 let ceil = Js_math.ceil_float
 let floor = Js_math.floor_float
 
+@new external createArray: int => array<'a> = "Array"
+
 let arrSize = Belt.Array.size
 let arrIsEmpty = arr => arrSize(arr) == 0
 let arrMap = Belt.Array.map
