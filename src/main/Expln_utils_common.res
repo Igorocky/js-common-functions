@@ -30,6 +30,10 @@ let arrIntDistinct = arr => arr
 let strSize = Js.String2.length
 let upper = Js.String2.toLocaleUpperCase
 let lower = Js.String2.toLocaleLowerCase
+let strJoin = (ss:array<string>, ~sep:string):string => {
+    let lastIdx = ss->Js.Array2.length - 1
+    ss->Js.Array2.mapi((s,i) => if (i != lastIdx) {s++sep} else {s})->Js_string2.concatMany("", _)
+}
 
 let toIntCmp: (('a,'a)=>float) => (('a,'a)=>int) = cmp => (a,b) => cmp(a,b)
     ->Js_math.sign_float
