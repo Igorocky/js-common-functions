@@ -63,47 +63,47 @@ let pntTrDir: (point, vector, float) => point = (p, dir, dist) => p -> pntTr(dir
 let vecRev: vector => vector = vecRot(_, deg(180.))
 
 let bndFromPoints: array<point> => boundaries = ps => {
-    if (arrIsEmpty(ps)) {
+    if (ps->Js.Array2.length == 0) {
         exn("Cannot create boudaries from an empty array of points.")
     }
     let minX = ref(ps[0].x)
     let minY = ref(ps[0].y)
     let maxX = ref(minX.contents)
     let maxY = ref(minY.contents)
-    for i in 1 to arrSize(ps)-1 {
+    for i in 1 to ps->Js.Array2.length - 1 {
         let p = ps[i]
-        minX := minF(minX.contents, p.x)
-        minY := minF(minY.contents, p.y)
-        maxX := maxF(maxX.contents, p.x)
-        maxY := maxF(maxY.contents, p.y)
+        minX := Js.Math.min_float(minX.contents, p.x)
+        minY := Js.Math.min_float(minY.contents, p.y)
+        maxX := Js.Math.max_float(maxX.contents, p.x)
+        maxY := Js.Math.max_float(maxY.contents, p.y)
     }
     {minX:minX.contents, minY:minY.contents, maxX:maxX.contents, maxY:maxY.contents}
 }
 let bndAddPoint: (boundaries,point) => boundaries = (b,p) => {
-    minX:minF(b.minX,p.x),
-    minY:minF(b.minY,p.y),
-    maxX:maxF(b.maxX,p.x),
-    maxY:maxF(b.maxY,p.y),
+    minX:Js.Math.min_float(b.minX,p.x),
+    minY:Js.Math.min_float(b.minY,p.y),
+    maxX:Js.Math.max_float(b.maxX,p.x),
+    maxY:Js.Math.max_float(b.maxY,p.y),
 }
 let bndMerge: (boundaries,boundaries) => boundaries = (b1,b2) => {
-    minX:minF(b1.minX,b2.minX),
-    minY:minF(b1.minY,b2.minY),
-    maxX:maxF(b1.maxX,b2.maxX),
-    maxY:maxF(b1.maxY,b2.maxY),
+    minX:Js.Math.min_float(b1.minX,b2.minX),
+    minY:Js.Math.min_float(b1.minY,b2.minY),
+    maxX:Js.Math.max_float(b1.maxX,b2.maxX),
+    maxY:Js.Math.max_float(b1.maxY,b2.maxY),
 }
 let bndAddPoints: (boundaries,array<point>) => boundaries = (b,ps) => {
-    if (arrIsEmpty(ps)) {
+    if (ps->Js.Array2.length == 0) {
         b
     } else {
         b->bndMerge(bndFromPoints(ps))
     }
 }
 let bndMergeAll: array<boundaries> => boundaries = bs => {
-    if (arrIsEmpty(bs)) {
+    if (bs->Js.Array2.length == 0) {
         exn("Cannot merge empty array of boundaries.")
     } else {
         let b = ref(bs[0])
-        for i in 1 to arrSize(bs)-1 {
+        for i in 1 to bs->Js.Array2.length - 1 {
             b := b.contents->bndMerge(bs[i])
         }
         b.contents

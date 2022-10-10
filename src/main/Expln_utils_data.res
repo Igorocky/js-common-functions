@@ -19,9 +19,9 @@ let mergeRows:(Js_dict.t<'b>,Js_dict.t<'b>) => Js_dict.t<'b> = (r1,r2) => {
 
 let select: (array<'a>, array<selectExpr<'a,'b>>) => array<Js_dict.t<'b>> = 
     (objects,selectors) => {
-        objects->arrMap( o=>
-                        selectors->arrMap(applySingleSelect(o,_))
-            ->arrReduce(Js.Dict.empty(),mergeRows)
+        objects->Js.Array2.map( o=>
+                        selectors->Js.Array2.map(applySingleSelect(o,_))
+            ->Js.Array2.reduce(mergeRows, Js.Dict.empty())
 
         )
     }
@@ -55,4 +55,4 @@ let objToTableWithChildren:('a,array<selectStage<'a,'b>>) => array<(Js_dict.t<'b
 
 let objToTable = (json, selectStages) => 
     objToTableWithChildren(json, selectStages) 
-    -> arrMap(( (dictjs,_) ) => dictjs)
+    -> Js.Array2.map(( (dictjs,_) ) => dictjs)
