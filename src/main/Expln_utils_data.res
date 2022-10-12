@@ -56,3 +56,81 @@ let objToTableWithChildren:('a,array<selectStage<'a,'b>>) => array<(Js_dict.t<'b
 let objToTable = (json, selectStages) => 
     objToTableWithChildren(json, selectStages) 
     -> Js.Array2.map(( (dictjs,_) ) => dictjs)
+
+type nodeToProcess<'n> = {
+    node: 'n,
+    nodesToPostProcess: option<array<'n>>
+}
+
+let traverseNodes = (
+    context:'c,
+    root:'n,
+    getChildren: 'n=>option<array<'n>>,
+    ~preProcess:option<('c,'n)=>option<'r>>=?,
+    ~process:option<('c,'n)=>option<'r>>=?,
+    ~postProcess:option<('c,'n)=>option<'r>>=?,
+    ()
+): option<'r> => {
+    let hasPreProcess = preProcess->Belt_Option.isSome
+    let hasProcess = process->Belt_Option.isSome
+    let hasPostProcess = postProcess->Belt_Option.isSome
+    let nodesToProcess = Belt_MutableStack.make()
+    let res = ref(None)
+    nodesToProcess->Belt_MutableStack.push({node:root, nodesToPostProcess: if hasPostProcess {Some([root])} else {None}})
+    while (!(nodesToProcess->Belt_MutableStack.isEmpty) && res.contents->Belt_Option.isNone) {
+        switch nodesToProcess->Belt_MutableStack.pop {
+            | None => ()
+            | Some(currNode) => {
+                if (hasPreProcess) {
+                    res.contents = preProcess->Belt_Option.flatMap(f=>f(context, currNode.node))
+                }
+                if (res.contents->Belt_Option.isNone && hasProcess) {
+                    res.contents = process->Belt_Option.flatMap(f=>f(context, currNode.node))
+                }
+                switch getChildren(currNode.node) {
+                    | None | Some([]) => {
+                        if (hasPostProcess && res.contents->Belt_Option.isNone) {
+                            switch currNode.nodesToPostProcess {
+                                | None => ()
+                                | Some(nodes) => {
+                                    let i = ref(nodes->Js_array2.length - 1)
+                                    while (i.contents >= 0 && res.contents->Belt_Option.isNone) {
+                                        //TODO check how this gets converted to js
+                                        res.contents = postProcess->Belt_Option.flatMap(f => f(context, nodes[i.contents]))
+                                        i.contents = i.contents - 1
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    | Some(children) => {
+                        let maxChildIdx = children->Js_array2.length - 1
+                        for i in maxChildIdx downto 0 {
+                            nodesToProcess->Belt_MutableStack.push({
+                                node:children[i],
+                                nodesToPostProcess:
+                                    if (hasPostProcess) {
+                                        if (i == maxChildIdx) {
+                                            switch currNode.nodesToPostProcess {
+                                                | Some(nodes) => {
+                                                    nodes->Js_array2.push(children[i])->ignore
+                                                    Some(nodes)
+                                                }
+                                                | _ => None // this case is not possible, thus returning None because it doesn't matter
+                                            }
+                                        } else {
+                                            Some([children[i]])
+                                        }
+                                    } else {
+                                        None
+                                    }
+                            })
+                        }
+                    }
+                }
+            }
+        }
+    }
+    res.contents
+}
+
