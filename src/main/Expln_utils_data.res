@@ -114,7 +114,10 @@ let traverseNodes = (
                                                     nodes->Js_array2.push(children[i])->ignore
                                                     Some(nodes)
                                                 }
-                                                | _ => None // this case is not possible, thus returning None because it doesn't matter
+                                                | _ => 
+                                                    raise(ExplnUtilsException({
+                                                        msg:"this case is not possible, because each node has itself in its nodesToPostProcess"
+                                                    }))
                                             }
                                         } else {
                                             Some([children[i]])

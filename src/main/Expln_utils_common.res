@@ -26,3 +26,8 @@ let stringify: 'a => string = a => switch Js.Json.stringifyAny(a) {
 
 let promiseFlatMap = (promise,mapper) => promise -> Js.Promise.then_(mapper, _)
 let promiseMap = (promise,mapper) => promise -> promiseFlatMap(value => Js_promise.resolve(mapper(value)))
+
+type explnUtilsException = {
+    msg:string,
+}
+exception ExplnUtilsException(explnUtilsException)
