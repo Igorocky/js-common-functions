@@ -220,7 +220,7 @@ describe("traverseNodes", (.) => {
             },
             ~process=(arr,node)=>{
                 arr->Js_array2.push("process: " ++ node.name)->ignore
-                if (node.name == "5") {
+                if (node.name == "4") {
                     Some(arr)
                 } else {
                     None
@@ -246,9 +246,6 @@ describe("traverseNodes", (.) => {
                         "postProcess: 3",
                         "preProcess: 4",
                         "process: 4",
-                        "postProcess: 4",
-                        "preProcess: 5",
-                        "process: 5",
             ])
         )
     })
