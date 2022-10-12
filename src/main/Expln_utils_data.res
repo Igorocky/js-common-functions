@@ -84,22 +84,20 @@ let traverseNodes = (
                 if (hasPreProcess) {
                     res.contents = preProcess->Belt_Option.flatMap(f=>f(context, currNode.node))
                 }
-                if (res.contents->Belt_Option.isNone && hasProcess) {
+                if (hasProcess && res.contents->Belt_Option.isNone) {
                     res.contents = process->Belt_Option.flatMap(f=>f(context, currNode.node))
                 }
-                if (res.contents->Belt_Option.isNone) {
+                if (hasPostProcess && res.contents->Belt_Option.isNone) {
                     switch getChildren(currNode.node) {
                         | None | Some([]) => {
-                            if (hasPostProcess) {
-                                switch currNode.nodesToPostProcess {
-                                    | None => ()
-                                    | Some(nodes) => {
-                                        let i = ref(nodes->Js_array2.length - 1)
-                                        while (i.contents >= 0 && res.contents->Belt_Option.isNone) {
-                                            //TODO check how this gets converted to js
-                                            res.contents = postProcess->Belt_Option.flatMap(f => f(context, nodes[i.contents]))
-                                            i.contents = i.contents - 1
-                                        }
+                            switch currNode.nodesToPostProcess {
+                                | None => ()
+                                | Some(nodes) => {
+                                    let i = ref(nodes->Js_array2.length - 1)
+                                    while (i.contents >= 0 && res.contents->Belt_Option.isNone) {
+                                        //TODO check how this gets converted to js
+                                        res.contents = postProcess->Belt_Option.flatMap(f => f(context, nodes[i.contents]))
+                                        i.contents = i.contents - 1
                                     }
                                 }
                             }
@@ -110,20 +108,16 @@ let traverseNodes = (
                                 nodesToProcess->Belt_MutableStack.push({
                                     node:children[i],
                                     nodesToPostProcess:
-                                        if (hasPostProcess) {
-                                            if (i == maxChildIdx) {
-                                                switch currNode.nodesToPostProcess {
-                                                    | Some(nodes) => {
-                                                        nodes->Js_array2.push(children[i])->ignore
-                                                        Some(nodes)
-                                                    }
-                                                    | _ => None // this case is not possible, thus returning None because it doesn't matter
+                                        if (i == maxChildIdx) {
+                                            switch currNode.nodesToPostProcess {
+                                                | Some(nodes) => {
+                                                    nodes->Js_array2.push(children[i])->ignore
+                                                    Some(nodes)
                                                 }
-                                            } else {
-                                                Some([children[i]])
+                                                | _ => None // this case is not possible, thus returning None because it doesn't matter
                                             }
                                         } else {
-                                            None
+                                            Some([children[i]])
                                         }
                                 })
                             }
