@@ -91,7 +91,10 @@ let traverseNodes = (
                     switch getChildren(currNode.node) {
                         | None | Some([]) => {
                             switch currNode.nodesToPostProcess {
-                                | None => ()
+                                | None =>
+                                    raise(ExplnUtilsException({
+                                        msg:"this case is not possible, because each node has itself in its nodesToPostProcess (1)"
+                                    }))
                                 | Some(nodes) => {
                                     let i = ref(nodes->Js_array2.length - 1)
                                     while (i.contents >= 0 && res.contents->Belt_Option.isNone) {
@@ -116,7 +119,7 @@ let traverseNodes = (
                                                 }
                                                 | _ => 
                                                     raise(ExplnUtilsException({
-                                                        msg:"this case is not possible, because each node has itself in its nodesToPostProcess"
+                                                        msg:"this case is not possible, because each node has itself in its nodesToPostProcess (2)"
                                                     }))
                                             }
                                         } else {
