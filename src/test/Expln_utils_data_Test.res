@@ -1,6 +1,6 @@
 open Expln_utils_common
 let {log,log2} = module(Js.Console)
-let {objToTable, objToTableWithChildren, traverseNodes} = module(Expln_utils_data)
+let {objToTable, objToTableWithChildren, traverseTree} = module(Expln_utils_data)
 let {parseObj, arrOpt, num, str} = module(Expln_utils_jsonParse)
 let {describe,it,assertEq,fail} = module(Expln_test)
 
@@ -60,7 +60,7 @@ type rec testNode = {
     name: string,
     ch: option<array<testNode>>
 }
-describe("traverseNodes", (.) => {
+describe("traverseTree", (.) => {
     it("should traverse all nodes in the correct order", (.) => {
         //given
         let tree = {
@@ -83,7 +83,7 @@ describe("traverseNodes", (.) => {
 
         //when
         let log = []
-        let res = traverseNodes(
+        let res = traverseTree(
             log,
             tree,
             node => node.ch,
@@ -150,7 +150,7 @@ describe("traverseNodes", (.) => {
         }
 
         //when
-        let res = traverseNodes(
+        let res = traverseTree(
             [],
             tree,
             node => node.ch,
@@ -210,7 +210,7 @@ describe("traverseNodes", (.) => {
         }
 
         //when
-        let res = traverseNodes(
+        let res = traverseTree(
             [],
             tree,
             node => node.ch,
@@ -271,7 +271,7 @@ describe("traverseNodes", (.) => {
         }
 
         //when
-        let res = traverseNodes(
+        let res = traverseTree(
             [],
             tree,
             node => node.ch,

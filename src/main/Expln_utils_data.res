@@ -62,7 +62,7 @@ type nodeToProcess<'n> = {
     nodesToPostProcess: option<array<'n>>
 }
 
-let traverseNodes = (
+let traverseTree = (
     context:'c,
     root:'n,
     getChildren: 'n=>option<array<'n>>,
