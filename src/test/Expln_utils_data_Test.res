@@ -314,4 +314,52 @@ describe("traverseTree", (.) => {
             ])
         )
     })
+    
+    it("should traverse all nodes when only process is defined", (.) => {
+        //given
+        let tree = {
+            name: "1",
+            ch: Some([
+                {
+                    name: "2",
+                    ch: Some([
+                        {name: "3", ch: None},
+                        {name: "4", ch: None},
+                        {name: "5", ch: None},
+                    ])
+                },
+                {
+                    name: "6",
+                    ch: Some([])
+                }
+            ])
+        }
+
+        //when
+        let log = []
+        let res = traverseTree(
+            log,
+            tree,
+            node => node.ch,
+            ~process=(arr,node)=>{
+                arr->Js_array2.push("process: " ++ node.name)->ignore
+                None
+            },
+            ()
+        )
+
+        //then
+        assertEq(res,None)
+        assertEq(
+            log,
+            [
+                "process: 1",
+                    "process: 2",
+                        "process: 3",
+                        "process: 4",
+                        "process: 5",
+                    "process: 6",
+            ]
+        )
+    })
 })

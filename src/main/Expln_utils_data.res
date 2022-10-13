@@ -87,20 +87,22 @@ let traverseTree = (
                 if (hasProcess && res.contents->Belt_Option.isNone) {
                     res.contents = process->Belt_Option.flatMap(f=>f(context, currNode.node))
                 }
-                if (hasPostProcess && res.contents->Belt_Option.isNone) {
+                if (res.contents->Belt_Option.isNone) {
                     switch getChildren(currNode.node) {
                         | None | Some([]) => {
-                            switch currNode.nodesToPostProcess {
-                                | None =>
-                                    raise(ExplnUtilsException({
-                                        msg:"this case is not possible, because each node has itself in its nodesToPostProcess (1)"
-                                    }))
-                                | Some(nodes) => {
-                                    let i = ref(nodes->Js_array2.length - 1)
-                                    while (i.contents >= 0 && res.contents->Belt_Option.isNone) {
-                                        //TODO check how this gets converted to js
-                                        res.contents = postProcess->Belt_Option.flatMap(f => f(context, nodes[i.contents]))
-                                        i.contents = i.contents - 1
+                            if (hasPostProcess) {
+                                switch currNode.nodesToPostProcess {
+                                    | None =>
+                                        raise(ExplnUtilsException({
+                                            msg:"this case is not possible, because each node has itself in its nodesToPostProcess (1)"
+                                        }))
+                                    | Some(nodes) => {
+                                        let i = ref(nodes->Js_array2.length - 1)
+                                        while (i.contents >= 0 && res.contents->Belt_Option.isNone) {
+                                            //TODO check how this gets converted to js
+                                            res.contents = postProcess->Belt_Option.flatMap(f => f(context, nodes[i.contents]))
+                                            i.contents = i.contents - 1
+                                        }
                                     }
                                 }
                             }
@@ -111,19 +113,23 @@ let traverseTree = (
                                 nodesToProcess->Belt_MutableStack.push({
                                     node:children[i],
                                     nodesToPostProcess:
-                                        if (i == maxChildIdx) {
-                                            switch currNode.nodesToPostProcess {
-                                                | Some(nodes) => {
-                                                    nodes->Js_array2.push(children[i])->ignore
-                                                    Some(nodes)
+                                        if (hasPostProcess) {
+                                            if (i == maxChildIdx) {
+                                                switch currNode.nodesToPostProcess {
+                                                    | Some(nodes) => {
+                                                        nodes->Js_array2.push(children[i])->ignore
+                                                        Some(nodes)
+                                                    }
+                                                    | _ => 
+                                                        raise(ExplnUtilsException({
+                                                            msg:"this case is not possible, because each node has itself in its nodesToPostProcess (2)"
+                                                        }))
                                                 }
-                                                | _ => 
-                                                    raise(ExplnUtilsException({
-                                                        msg:"this case is not possible, because each node has itself in its nodesToPostProcess (2)"
-                                                    }))
+                                            } else {
+                                                Some([children[i]])
                                             }
                                         } else {
-                                            Some([children[i]])
+                                            None
                                         }
                                 })
                             }
