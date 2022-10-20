@@ -25,4 +25,7 @@
 	"ReactDOM.Style.make": { "scope": "", "prefix": "stl", "body": [
 			"ReactDOM.Style.make($0, ())"
     ] },
+	"contents": { "scope": "", "prefix": ".co", "body": [
+			".contents"
+    ] },
 }

@@ -65,7 +65,7 @@ type nodeToProcess<'n> = {
 let traverseTree = (
     context:'c,
     root:'n,
-    getChildren: 'n=>option<array<'n>>,
+    getChildren: ('c,'n)=>option<array<'n>>,
     ~preProcess:option<('c,'n)=>option<'r>>=?,
     ~process:option<('c,'n)=>option<'r>>=?,
     ~postProcess:option<('c,'n)=>option<'r>>=?,
@@ -88,7 +88,7 @@ let traverseTree = (
                     res.contents = process->Belt_Option.flatMap(f=>f(context, currNode.node))
                 }
                 if (res.contents->Belt_Option.isNone) {
-                    switch getChildren(currNode.node) {
+                    switch getChildren(context, currNode.node) {
                         | None | Some([]) => {
                             if (hasPostProcess) {
                                 switch currNode.nodesToPostProcess {

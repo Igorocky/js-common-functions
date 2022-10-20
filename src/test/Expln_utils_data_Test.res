@@ -86,7 +86,7 @@ describe("traverseTree", (.) => {
         let res = traverseTree(
             log,
             tree,
-            node => node.ch,
+            (_, node) => node.ch,
             ~preProcess=(arr,node)=>{
                 arr->Js_array2.push("preProcess: " ++ node.name)->ignore
                 None
@@ -153,7 +153,7 @@ describe("traverseTree", (.) => {
         let res = traverseTree(
             [],
             tree,
-            node => node.ch,
+            (_, node) => node.ch,
             ~preProcess=(arr,node)=>{
                 arr->Js_array2.push("preProcess: " ++ node.name)->ignore
                 if (node.name == "4") {
@@ -213,7 +213,7 @@ describe("traverseTree", (.) => {
         let res = traverseTree(
             [],
             tree,
-            node => node.ch,
+            (_, node) => node.ch,
             ~preProcess=(arr,node)=>{
                 arr->Js_array2.push("preProcess: " ++ node.name)->ignore
                 None
@@ -274,7 +274,7 @@ describe("traverseTree", (.) => {
         let res = traverseTree(
             [],
             tree,
-            node => node.ch,
+            (_, node) => node.ch,
             ~preProcess=(arr,node)=>{
                 arr->Js_array2.push("preProcess: " ++ node.name)->ignore
                 None
@@ -340,7 +340,7 @@ describe("traverseTree", (.) => {
         let res = traverseTree(
             log,
             tree,
-            node => node.ch,
+            (_, node) => node.ch,
             ~process=(arr,node)=>{
                 arr->Js_array2.push("process: " ++ node.name)->ignore
                 None
