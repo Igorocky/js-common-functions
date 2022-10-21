@@ -1,5 +1,7 @@
 @val external describe: (string, (. unit)=>unit) => unit = "describe"
+@val external describe_skip: (string, (. unit)=>unit) => unit = "describe.skip"
 @val external it: (string, (. unit)=>unit) => unit = "it"
+@val external it_skip: (string, (. unit)=>unit) => unit = "it.skip"
 
 let {exn, stringify} = module(Expln_utils_common)
 
