@@ -5,6 +5,29 @@ let clearArray = %raw(`arr => arr.length = 0`)
 let arrFlatMap = (arr,func) => arr -> Belt.Array.map(func)->Belt.Array.concatMany
 let arrStrDistinct = arr => arr->Belt_Set.String.fromArray->Belt_Set.String.toArray
 let arrIntDistinct = arr => arr->Belt_Set.Int.fromArray->Belt_Set.Int.toArray
+let arrForEach = (arr: array<'a>, consumer: 'a => option<'b>):option<'b> => {
+    let len = arr->Js_array2.length
+    let i = ref(0)
+    let res = ref(None)
+    while (i.contents < len && res.contents->Belt_Option.isNone) {
+        res.contents = consumer(arr[i.contents])
+        i.contents = i.contents + 1
+    }
+    res.contents
+}
+
+let copySubArray = (~src:array<'t>, ~srcFromIdx:int, ~dst:array<'t>, ~dstFromIdx:int, ~len:int): unit => {
+    let s = ref(srcFromIdx)
+    let d = ref(dstFromIdx)
+    let srcLen = src->Js_array2.length
+    let dstLen = dst->Js_array2.length
+    let sMax = Js_math.min_int(srcLen - 1, srcFromIdx + len - 1) 
+    while (s.contents <= sMax && d.contents < dstLen) {
+        dst[d.contents] = src[s.contents]
+        d.contents = d.contents + 1
+        s.contents = s.contents + 1
+    }
+}
 
 let strJoin = (ss:array<string>, ~sep:string="", ()):string => {
     let lastIdx = ss->Js.Array2.length - 1
