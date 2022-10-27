@@ -12,7 +12,7 @@ let make = (
         {switch children {
             | Some(ch) => 
                 React.Children.map(ch, c => {
-                    <Expln_React_Grid item=true > c </Expln_React_Grid>
+                    <Expln_React_Grid > c </Expln_React_Grid>
                 } )
             | None => React.null
         }}
