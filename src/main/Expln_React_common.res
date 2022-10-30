@@ -23,3 +23,6 @@ let evt2Bool = boolConsumer => e => boolConsumer(ReactEvent.Form.target(e)["chec
 
 @module("react")
 external useState: 'a => ('a, 'a => unit) = "useState"
+
+@module("react")
+external useStateF: 'a => ('a, ('a => 'a) => unit) = "useState"

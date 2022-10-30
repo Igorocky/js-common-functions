@@ -5,5 +5,6 @@ type variant = [#text|#contained|#outlined]
 external make: (
     ~onClick: reMouseHnd=?, 
     ~variant:variant=?, 
+    ~disabled:bool=?,
     ~children: reElem=?
 ) => reElem = "default"

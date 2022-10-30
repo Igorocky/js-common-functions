@@ -22,6 +22,9 @@
 	"React.string": { "scope": "", "prefix": "str", "body": [
 			"React.string($0)"
     ] },
+	"React.array": { "scope": "", "prefix": "arr", "body": [
+			"React.array($0)"
+    ] },
 	"ReactDOM.Style.make": { "scope": "", "prefix": "stl", "body": [
 			"ReactDOM.Style.make($0, ())"
     ] },
