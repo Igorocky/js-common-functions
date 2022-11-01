@@ -5,5 +5,6 @@ type variant = [#text|#contained|#outlined]
 external make: (
     ~onClick: reMouseHnd=?, 
     ~style: reStyle=?,
+    ~component:string=?,
     ~children: reElem=?
 ) => reElem = "default"
