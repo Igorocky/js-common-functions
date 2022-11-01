@@ -5,7 +5,7 @@ type tab<'a> = {
 }
 
 type tabMethods<'a> = {
-    addTab: (~label:string, ~closable:bool, ~data:'a) => unit,
+    addTab: (~data:'a) => unit,
 }
 
 let useTabs: unit => tabMethods<'a>
