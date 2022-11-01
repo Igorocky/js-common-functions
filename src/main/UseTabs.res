@@ -1,38 +1,31 @@
-open Expln_React_common
-open Expln_React_Mui
-
 type tab<'a> = {
     data: 'a
 }
 
-type tabMethods<'a> = {
-    addTab: (~data:'a) => unit,
+type tabMethods<'d> = {
+    addTab: (~data:'d) => tab<'d>,
 }
 
-type st<'a> = {
-    tabs: array<tab<'a>>,
+type st<'t> = {
+    tabs: array<tab<'t>>,
 }
 
-let initSt = {
+let initSt: 'a => st<'a> = d => {
     tabs: [],
 }
 
-let addTab = (st, ~data:'a) => {
-    let newTabs = st.tabs->Js_array2.concat([{data:data}])
-    ()
+let addTab = (st, ~data:'d) => {
+    let newTab = {data:data}
+    st.tabs->Js_array2.concat([newTab])->ignore
+    newTab
 }
 
-let useTabs = ():tabMethods<'a> => {
-    let (state, setState) = useStateF(initSt)
+let useTabs = (init:'c):tabMethods<'c> => {
 
-    let addTab = (~data:'a) => {
-        setState(prev => {
-            prev->addTab(~data)
-            prev
-        })
+    let addTab = (~data:'c) => {
+        let newTab = {data:data}
+        addTab(initSt(init), ~data)
     }
 
-    {
-        addTab: addTab,
-    }
+    { addTab: addTab }
 }
