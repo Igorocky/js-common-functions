@@ -1,4 +1,5 @@
-let promise: (('a => unit) => unit) => Js.Promise.t<'a> = procedure => {
+type promise<'a> = Js.Promise.t<'a>
+let promise: (('a => unit) => unit) => promise<'a> = procedure => {
     Js.Promise.make(
         (~resolve, ~reject) => {
             try {

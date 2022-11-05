@@ -12,9 +12,9 @@ let renderDefaultView = idOfNonExistentView =>
 
 @react.component
 let make = (~allViews: array<view>, ~defaultViewId = ?) => {
-  let (selectedViewId, setSelectedViewId) = useState(defaultViewId)
+  let (selectedViewId, setSelectedViewId) = React.useState(_ => defaultViewId)
 
-  let openView = view => setSelectedViewId(Some(view.id))
+  let openView = view => setSelectedViewId(_ => Some(view.id))
 
   let renderViewListItem = view =>
     <ListItem key={view.id}>

@@ -82,9 +82,8 @@ describe("traverseTree", (.) => {
         }
 
         //when
-        let log = []
-        let res = traverseTree(
-            log,
+        let (log, res) = traverseTree(
+            [],
             tree,
             (_, node) => node.ch,
             ~preProcess=(arr,node)=>{
@@ -150,7 +149,7 @@ describe("traverseTree", (.) => {
         }
 
         //when
-        let res = traverseTree(
+        let (_, res) = traverseTree(
             [],
             tree,
             (_, node) => node.ch,
@@ -210,7 +209,7 @@ describe("traverseTree", (.) => {
         }
 
         //when
-        let res = traverseTree(
+        let (_, res) = traverseTree(
             [],
             tree,
             (_, node) => node.ch,
@@ -271,7 +270,7 @@ describe("traverseTree", (.) => {
         }
 
         //when
-        let res = traverseTree(
+        let (_,res) = traverseTree(
             [],
             tree,
             (_, node) => node.ch,
@@ -336,9 +335,8 @@ describe("traverseTree", (.) => {
         }
 
         //when
-        let log = []
-        let res = traverseTree(
-            log,
+        let (log, res) = traverseTree(
+            [],
             tree,
             (_, node) => node.ch,
             ~process=(arr,node)=>{

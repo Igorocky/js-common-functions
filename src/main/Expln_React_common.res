@@ -18,11 +18,6 @@ type reImageHnd = ReactEvent.Image.t=>unit
 type reAnimationHnd = ReactEvent.Animation.t=>unit
 type reTransitionHnd = ReactEvent.Transition.t=>unit
 
-let evt2Str = strConsumer => e => strConsumer(ReactEvent.Form.target(e)["value"])
-let evt2Bool = boolConsumer => e => boolConsumer(ReactEvent.Form.target(e)["checked"])
+let evt2str = strConsumer => e => strConsumer(ReactEvent.Form.target(e)["value"])
+let evt2bool = boolConsumer => e => boolConsumer(ReactEvent.Form.target(e)["checked"])
 
-@module("react")
-external useState: 'a => ('a, 'a => unit) = "useState"
-
-@module("react")
-external useStateF: 'a => ('a, ('a => 'a) => unit) = "useState"

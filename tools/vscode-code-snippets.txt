@@ -31,4 +31,7 @@
 	"contents": { "scope": "", "prefix": ".co", "body": [
 			".contents"
     ] },
+	"callback": { "scope": "", "prefix": "cb", "body": [
+			"_ => "
+    ] },
 }

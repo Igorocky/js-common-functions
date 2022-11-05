@@ -8,6 +8,7 @@ external make: (
     ~value:string=?,
     ~label:string=?,
     ~size:size=?,
+    ~style:reStyle=?,
     ~variant:variant=?,
     ~multiline:bool=?,
     ~minRows:int=?,
@@ -17,4 +18,5 @@ external make: (
     ~inputProps:{..}=?,
     ~disabled:bool=?,
     ~autoFocus:bool=?,
+    ~error:bool=?,
 ) => reElem = "default"
