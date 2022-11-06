@@ -12,5 +12,5 @@ let promise: (('a => unit) => unit) => promise<'a> = procedure => {
         }
     )
 }
-let prFlatMap = (promise, mapper) => promise -> Js.Promise.then_(mapper, _)
-let prMap = (promise, mapper) => promise -> prFlatMap(value => Js_promise.resolve(mapper(value)))
+let promiseFlatMap = (promise, mapper) => promise -> Js.Promise.then_(mapper, _)
+let promiseMap = (promise, mapper) => promise -> promiseFlatMap(value => Js_promise.resolve(mapper(value)))
