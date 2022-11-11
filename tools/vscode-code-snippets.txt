@@ -31,6 +31,9 @@
 	"contents": { "scope": "", "prefix": ".co", "body": [
 			".contents"
     ] },
+	"contents": { "scope": "", "prefix": ".ig", "body": [
+			"->ignore"
+    ] },
 	"callback": { "scope": "", "prefix": "cb", "body": [
 			"_ => "
     ] },
