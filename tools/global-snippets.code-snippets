@@ -16,25 +16,17 @@
 	// 	"description": "Log output to console"
 	// }
 
-	"React.null": { "scope": "", "prefix": "null", "body": [
-			"React.null"
+	"React.null": { "scope": "", "prefix": "null", "body": [ "React.null" ] },
+	"React.string": { "scope": "", "prefix": "str", "body": [ "React.string($0)" ] },
+	"React.array": { "scope": "", "prefix": "arr", "body": [ "React.array($0)" ] },
+	"ReactDOM.Style.make": { "scope": "", "prefix": "stl", "body": [ "ReactDOM.Style.make($0, ())" ] },
+	"contents": { "scope": "", "prefix": ".co", "body": [ ".contents" ] },
+	"ignore": { "scope": "", "prefix": ".ig", "body": [ "->ignore" ] },
+	"callback": { "scope": "", "prefix": "cb", "body": [ "_ => " ] },
+	"log-delim": { "scope": "", "prefix": ".l-delim", "body": [
+			"Js.Console.log(\"---------- $0 ------------------------------------------------------------\")"
     ] },
-	"React.string": { "scope": "", "prefix": "str", "body": [
-			"React.string($0)"
-    ] },
-	"React.array": { "scope": "", "prefix": "arr", "body": [
-			"React.array($0)"
-    ] },
-	"ReactDOM.Style.make": { "scope": "", "prefix": "stl", "body": [
-			"ReactDOM.Style.make($0, ())"
-    ] },
-	"contents": { "scope": "", "prefix": ".co", "body": [
-			".contents"
-    ] },
-	"contents": { "scope": "", "prefix": ".ig", "body": [
-			"->ignore"
-    ] },
-	"callback": { "scope": "", "prefix": "cb", "body": [
-			"_ => "
+	"log-text": { "scope": "", "prefix": ".l-text", "body": [
+			"Js.Console.log(\"$0\")"
     ] },
 }

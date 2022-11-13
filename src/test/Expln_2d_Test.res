@@ -20,8 +20,8 @@ let assertEqVec = (v1:vector, v2:vector) => {
     assertEqPnt(v1->vecEnd, v2->vecEnd)
 }
 
-describe("utility test functions", (.) => {
-    it("work", (.) => {
+describe("utility test functions", _ => {
+    it("work", _ => {
         let p = {x:39.62, y:-71.03}->mkp
         assertEqNum(p->pntX, 39.62)
         assertEqNum(p->pntY, 71.03)
@@ -33,8 +33,8 @@ describe("utility test functions", (.) => {
     })
 })
 
-describe("Expln_2d", (.) => {
-    it("test all", (.) => {
+describe("Expln_2d", _ => {
+    it("test all", _ => {
         //let ex: vector
         //let ey: vector
         assertEqVec(ex->vecRot(rad(Js.Math._PI /. 2.)), ey)
@@ -137,8 +137,8 @@ describe("Expln_2d", (.) => {
     })
 })
 
-describe("boundaries", (.) => {
-    it("works", (.) => {
+describe("boundaries", _ => {
+    it("works", _ => {
         //let bndFromPoints: array<point> => boundaries
         let b = bndFromPoints([mkp({x:4., y:-11.})])
         assertEq(b->bndMinX, 4.)

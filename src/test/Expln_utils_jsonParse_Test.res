@@ -8,8 +8,8 @@ type param = {
     value: string,
 }
 
-describe("Expln_utils_json.parseObj", (.) => {
-    it("should parse simple object", (.) => {
+describe("Expln_utils_json.parseObj", _ => {
+    it("should parse simple object", _ => {
         //given
         let jsonStr = `{
             "name": "AAA",
@@ -53,7 +53,7 @@ describe("Expln_utils_json.parseObj", (.) => {
             }
         }
     })
-    it("returns a meaningful message when null is passed", (.) => {
+    it("returns a meaningful message when null is passed", _ => {
         //given
         let jsonStr = `null`
 
@@ -70,7 +70,7 @@ describe("Expln_utils_json.parseObj", (.) => {
             | _ => fail()
         }
     })
-    it("returns an error message when unparsable text is passed", (.) => {
+    it("returns an error message when unparsable text is passed", _ => {
         //given
         let jsonStr = `null-`
 
@@ -87,7 +87,7 @@ describe("Expln_utils_json.parseObj", (.) => {
             | _ => fail()
         }
     })
-    it("returns a meaningful message when null is passed for a non-null attribute", (.) => {
+    it("returns a meaningful message when null is passed for a non-null attribute", _ => {
         //given
         let jsonStr = `{
             "name": null,
@@ -107,7 +107,7 @@ describe("Expln_utils_json.parseObj", (.) => {
             | _ => fail()
         }
     })
-    it("returns a meaningful message when a non-null attribute is absent", (.) => {
+    it("returns a meaningful message when a non-null attribute is absent", _ => {
         //given
         let jsonStr = `{
             "name": "vvv"
@@ -128,8 +128,8 @@ describe("Expln_utils_json.parseObj", (.) => {
     })
 })
 
-describe("Expln_utils_json.parseObjOpt", (.) => {
-    it("should return None when null is passed", (.) => {
+describe("Expln_utils_json.parseObjOpt", _ => {
+    it("should return None when null is passed", _ => {
         //given
         let jsonStr = `null`
 
@@ -147,8 +147,8 @@ describe("Expln_utils_json.parseObjOpt", (.) => {
     })
 })
 
-describe("Expln_utils_json.asStrOpt", (.) => {
-    it("should return None when null is passed", (.) => {
+describe("Expln_utils_json.asStrOpt", _ => {
+    it("should return None when null is passed", _ => {
         //given
         let jsonStr = `{"arr":["A",null,"B"]}`
 
@@ -162,8 +162,8 @@ describe("Expln_utils_json.asStrOpt", (.) => {
     })
 })
 
-describe("Expln_utils_json.asStr", (.) => {
-    it("should return an error when null is passed", (.) => {
+describe("Expln_utils_json.asStr", _ => {
+    it("should return an error when null is passed", _ => {
         //given
         let jsonStr = `{"arr":["A",null,"B"]}`
 
@@ -177,8 +177,8 @@ describe("Expln_utils_json.asStr", (.) => {
     })
 })
 
-describe("Expln_utils_json.asNumOpt", (.) => {
-    it("should return None when null is passed", (.) => {
+describe("Expln_utils_json.asNumOpt", _ => {
+    it("should return None when null is passed", _ => {
         //given
         let jsonStr = `{"arr":[23.8,null,41]}`
 
@@ -192,8 +192,8 @@ describe("Expln_utils_json.asNumOpt", (.) => {
     })
 })
 
-describe("Expln_utils_json.asNum", (.) => {
-    it("should return an error when null is passed", (.) => {
+describe("Expln_utils_json.asNum", _ => {
+    it("should return an error when null is passed", _ => {
         //given
         let jsonStr = `{"arr":[23.8,null,41]}`
 
@@ -207,8 +207,8 @@ describe("Expln_utils_json.asNum", (.) => {
     })
 })
 
-describe("Expln_utils_json.asIntOpt", (.) => {
-    it("should return None when null is passed", (.) => {
+describe("Expln_utils_json.asIntOpt", _ => {
+    it("should return None when null is passed", _ => {
         //given
         let jsonStr = `{"arr":[23.8,null,41]}`
 
@@ -222,8 +222,8 @@ describe("Expln_utils_json.asIntOpt", (.) => {
     })
 })
 
-describe("Expln_utils_json.asInt", (.) => {
-    it("should return an error when null is passed", (.) => {
+describe("Expln_utils_json.asInt", _ => {
+    it("should return an error when null is passed", _ => {
         //given
         let jsonStr = `{"arr":[23.8,null,41]}`
 
@@ -237,8 +237,8 @@ describe("Expln_utils_json.asInt", (.) => {
     })
 })
 
-describe("Expln_utils_json.asBoolOpt", (.) => {
-    it("should return None when null is passed", (.) => {
+describe("Expln_utils_json.asBoolOpt", _ => {
+    it("should return None when null is passed", _ => {
         //given
         let jsonStr = `{"arr":[true,null,false]}`
 
@@ -252,8 +252,8 @@ describe("Expln_utils_json.asBoolOpt", (.) => {
     })
 })
 
-describe("Expln_utils_json.asBool", (.) => {
-    it("should return an error when null is passed", (.) => {
+describe("Expln_utils_json.asBool", _ => {
+    it("should return an error when null is passed", _ => {
         //given
         let jsonStr = `{"arr":[true,null,false]}`
 

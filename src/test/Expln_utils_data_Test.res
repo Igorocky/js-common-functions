@@ -7,8 +7,8 @@ let {describe,it,assertEq,fail} = module(Expln_test)
 let anyToJson = a => stringify(a) -> Js.Json.parseExn
 let id = x=>x
 
-describe("objToTable", (.) => {
-    it("should transform an object to a table", (.) => {
+describe("objToTable", _ => {
+    it("should transform an object to a table", _ => {
         //given
         let jsonAny = `{
             "id": 1244,
@@ -60,8 +60,8 @@ type rec testNode = {
     name: string,
     ch: option<array<testNode>>
 }
-describe("traverseTree", (.) => {
-    it("should traverse all nodes in the correct order", (.) => {
+describe("traverseTree", _ => {
+    it("should traverse all nodes in the correct order", _ => {
         //given
         let tree = {
             name: "1",
@@ -128,7 +128,7 @@ describe("traverseTree", (.) => {
         )
     })
 
-    it("should stop on preProcess", (.) => {
+    it("should stop on preProcess", _ => {
         //given
         let tree = {
             name: "1",
@@ -188,7 +188,7 @@ describe("traverseTree", (.) => {
         )
     })
 
-    it("should stop on process", (.) => {
+    it("should stop on process", _ => {
         //given
         let tree = {
             name: "1",
@@ -249,7 +249,7 @@ describe("traverseTree", (.) => {
         )
     })
 
-    it("should stop on postProcess", (.) => {
+    it("should stop on postProcess", _ => {
         //given
         let tree = {
             name: "1",
@@ -314,7 +314,7 @@ describe("traverseTree", (.) => {
         )
     })
     
-    it("should traverse all nodes when only process is defined", (.) => {
+    it("should traverse all nodes when only process is defined", _ => {
         //given
         let tree = {
             name: "1",

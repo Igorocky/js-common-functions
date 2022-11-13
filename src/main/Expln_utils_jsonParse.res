@@ -210,11 +210,11 @@ let parseObj: (string, jsonAny=>'a) => result<'a,string> = (jsonStr, mapper) =>
     }
 
 let runTests___ = () => {
-    describe("pathToStr", (.) => {
-        it("should return slash for empty path", (.) => {
+    describe("pathToStr", _ => {
+        it("should return slash for empty path", _ => {
             assertEq("/", pathToStr(list{}))
         })
-        it("should return slash separated values for non-empty path", (.) => {
+        it("should return slash separated values for non-empty path", _ => {
             assertEq(pathToStr(list{"name", "14", "settings"}), "/settings/14/name")
         })
     })
