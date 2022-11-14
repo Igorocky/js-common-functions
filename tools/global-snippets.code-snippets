@@ -22,7 +22,7 @@
 	"ReactDOM.Style.make": { "scope": "", "prefix": "stl", "body": [ "ReactDOM.Style.make($0, ())" ] },
 	"contents": { "scope": "", "prefix": ".co", "body": [ ".contents" ] },
 	"ignore": { "scope": "", "prefix": ".ig", "body": [ "->ignore" ] },
-	"callback": { "scope": "", "prefix": "cb", "body": [ "_ => " ] },
+	"callback": { "scope": "", "prefix": "cb", "body": [ "() => " ] },
 	"log-delim": { "scope": "", "prefix": ".l-delim", "body": [
 			"Js.Console.log(\"---------- $0 ------------------------------------------------------------\")"
     ] },

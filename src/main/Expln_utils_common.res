@@ -29,11 +29,6 @@ let copySubArray = (~src:array<'t>, ~srcFromIdx:int, ~dst:array<'t>, ~dstFromIdx
     }
 }
 
-let strJoin = (ss:array<string>, ~sep:string="", ()):string => {
-    let lastIdx = ss->Js.Array2.length - 1
-    ss->Js.Array2.mapi((s,i) => if (i != lastIdx) {s++sep} else {s})->Js_string2.concatMany("", _)
-}
-
 let toIntCmp: (('a,'a)=>float) => (('a,'a)=>int) = cmp => (a,b) => cmp(a,b)
     ->Js_math.sign_float
     ->Js_math.floor_int
