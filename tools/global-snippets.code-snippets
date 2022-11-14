@@ -23,10 +23,13 @@
 	"contents": { "scope": "", "prefix": ".co", "body": [ ".contents" ] },
 	"ignore": { "scope": "", "prefix": ".ig", "body": [ "->ignore" ] },
 	"callback": { "scope": "", "prefix": "cb", "body": [ "() => " ] },
-	"log-delim": { "scope": "", "prefix": ".l-delim", "body": [
+	"log-delim": { "scope": "", "prefix": ".ldelim", "body": [
 			"Js.Console.log(\"---------- $0 ------------------------------------------------------------\")"
     ] },
-	"log-text": { "scope": "", "prefix": ".l-text", "body": [
+	"log-text": { "scope": "", "prefix": ".ltext", "body": [
 			"Js.Console.log(\"$0\")"
+    ] },
+	"log-var": { "scope": "", "prefix": ".lvar", "body": [
+			"Js.Console.log2(\"$TM_SELECTED_TEXT\", $TM_SELECTED_TEXT)"
     ] },
 }
