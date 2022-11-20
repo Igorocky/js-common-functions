@@ -20,14 +20,20 @@
 	"React.string": { "scope": "", "prefix": "str", "body": [ "React.string($0)" ] },
 	"React.array": { "scope": "", "prefix": "arr", "body": [ "React.array($0)" ] },
 	"ReactDOM.Style.make": { "scope": "", "prefix": "stl", "body": [ "ReactDOM.Style.make($0, ())" ] },
+	"react-state": { "scope": "", "prefix": ".rstate", "body": [
+			"let (${TM_SELECTED_TEXT}, set${TM_SELECTED_TEXT/^(.)(.*)/${1:/upcase}$2/}) = React.useState(_ => $0)"
+    ] },
+	"tag": { "scope": "", "prefix": ".tag", "body": [
+			"<$1>$0</$1>"
+    ] },
 	"contents": { "scope": "", "prefix": ".co", "body": [ ".contents" ] },
 	"ignore": { "scope": "", "prefix": ".ig", "body": [ "->ignore" ] },
-	"callback": { "scope": "", "prefix": "cb", "body": [ "() => " ] },
+	"callback": { "scope": "", "prefix": "cb", "body": [ "_ => " ] },
 	"log-delim": { "scope": "", "prefix": ".ldelim", "body": [
 			"Js.Console.log(\"---------- $0 ------------------------------------------------------------\")"
     ] },
 	"log-text": { "scope": "", "prefix": ".ltext", "body": [
-			"Js.Console.log(\"$0\")"
+			"Js.Console.log(`$0`)"
     ] },
 	"log-var": { "scope": "", "prefix": ".lvar", "body": [
 			"Js.Console.log2(\"$TM_SELECTED_TEXT\", $TM_SELECTED_TEXT)"
