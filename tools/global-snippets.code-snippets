@@ -20,10 +20,10 @@
 	"React.string": { "scope": "", "prefix": "str", "body": [ "React.string($0)" ] },
 	"React.array": { "scope": "", "prefix": "arr", "body": [ "React.array($0)" ] },
 	"ReactDOM.Style.make": { "scope": "", "prefix": "stl", "body": [ "ReactDOM.Style.make($0, ())" ] },
-	"react-state": { "scope": "", "prefix": ".rstate", "body": [
-			"let (${TM_SELECTED_TEXT}, set${TM_SELECTED_TEXT/^(.)(.*)/${1:/upcase}$2/}) = React.useState(_ => $0)"
+	"react-state": { "scope": "", "prefix": ".s", "body": [
+		"let (${1/^(\\s*)(\\S+)/$2/}, set${1/^(\\s*)(\\S)(\\S*)/${2:/upcase}$3/}) = React.useState(_ => $0)"
     ] },
-	"tag": { "scope": "", "prefix": ".tag", "body": [
+	"tag": { "scope": "", "prefix": ".t", "body": [
 			"<$1>$0</$1>"
     ] },
 	"contents": { "scope": "", "prefix": ".co", "body": [ ".contents" ] },
