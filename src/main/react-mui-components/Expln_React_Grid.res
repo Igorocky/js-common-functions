@@ -5,6 +5,7 @@ type justifyContent = [ #"flex-start" | #"center" | #"flex-end" | #"space-betwee
 type alignItems = [ #"flex-start" | #"center" | #"flex-end" | #"stretch" | #"baseline" ]
 @module("@mui/material/Unstable_Grid2") @react.component
 external make: (
+    ~ref:ReactDOM.domRef=?,
     ~container:bool=?, 
     ~direction:direction=?,
     ~justifyContent:justifyContent=?,

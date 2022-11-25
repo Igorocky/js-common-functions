@@ -4,6 +4,7 @@ open Expln_React_common
 external make: (
     ~style: reStyle=?,
     ~disabled: bool=?,
+    ~indeterminate: bool=?,
     ~checked: bool=?,
     ~onChange: reFormHnd=?,
 ) => reElem = "default"

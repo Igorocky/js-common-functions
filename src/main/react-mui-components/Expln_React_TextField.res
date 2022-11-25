@@ -15,6 +15,8 @@ external make: (
     ~maxRows:int=?,
     ~rows:int=?,
     ~onChange:reFormHnd=?,
+    ~onKeyDown:reKeyboardHnd=?,
+    ~onKeyUp:reKeyboardHnd=?,
     ~inputProps:{..}=?,
     ~disabled:bool=?,
     ~autoFocus:bool=?,
