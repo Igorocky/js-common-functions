@@ -6,5 +6,6 @@ external make: (
     ~label:string=?,
     ~value:string,
     ~onChange:reFormHnd=?,
+    ~onClose:unit=>unit=?,
     ~children:reElem=?
 ) => reElem = "default"

@@ -23,8 +23,8 @@
 	"react-state": { "scope": "", "prefix": "@s", "body": [
 		"$0${TM_CURRENT_LINE/^(\\s*)(\\S)(.*)@s$/\n$1let ($2$3, set${2:/upcase}$3) = React.useState(_ => )/}"
     ] },
-	"tag": { "scope": "", "prefix": ".t", "body": [
-			"<$1>$0</$1>"
+	"tag2": { "scope": "", "prefix": "@t", "body": [
+		"$0${TM_CURRENT_LINE/^(\\s*)(\\S.*)@t$/\n$1<$2>\n$1<$2>/}"
     ] },
 
 	"contents": { "scope": "", "prefix": ".co", "body": [ ".contents" ] },

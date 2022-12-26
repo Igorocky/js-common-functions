@@ -18,6 +18,25 @@ type reImageHnd = ReactEvent.Image.t=>unit
 type reAnimationHnd = ReactEvent.Animation.t=>unit
 type reTransitionHnd = ReactEvent.Transition.t=>unit
 
-let evt2str = strConsumer => e => strConsumer(ReactEvent.Form.target(e)["value"])
-let evt2bool = boolConsumer => e => boolConsumer(ReactEvent.Form.target(e)["checked"])
+type reClickEvt = {
+    ctrl:bool,
+    alt:bool,
+    shift:bool,
+    left:bool,
+    middle:bool,
+    right:bool,
+}
+
+let evt2str = strConsumer => evt => strConsumer(ReactEvent.Form.target(evt)["value"])
+let evt2bool = boolConsumer => evt => boolConsumer(ReactEvent.Form.target(evt)["checked"])
+let evt2click = (clickConsumer:reClickEvt=>unit):reMouseHnd => evt => {
+    clickConsumer({
+        ctrl: evt->ReactEvent.Mouse.ctrlKey,
+        alt: evt->ReactEvent.Mouse.altKey,
+        shift: evt->ReactEvent.Mouse.shiftKey,
+        left: evt->ReactEvent.Mouse.button == 0,
+        middle: evt->ReactEvent.Mouse.button == 1,
+        right: evt->ReactEvent.Mouse.button == 2,
+    })
+}
 
